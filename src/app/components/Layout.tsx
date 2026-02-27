@@ -1,20 +1,19 @@
 import { Outlet, Link, useLocation } from 'react-router';
-import { Trophy, BarChart3, Settings, BookOpen } from 'lucide-react';
+import { Trophy, BarChart3, Settings, BookOpen, Users } from 'lucide-react';
 
 export function Layout() {
   const location = useLocation();
 
   const navItems = [
-    { path: '/', label: 'Leaderboard', icon: Trophy },
-    { path: '/weekly', label: 'Weekly', icon: BarChart3 },
-    { path: '/admin', label: 'Admin', icon: Settings },
-    { path: '/rules', label: 'Rules', icon: BookOpen },
+    { path: '/',        label: 'Leaderboard', icon: Trophy },
+    { path: '/weekly',  label: 'Weekly',      icon: BarChart3 },
+    { path: '/tribes',  label: 'Tribes',      icon: Users },
+    { path: '/admin',   label: 'Admin',       icon: Settings },
+    { path: '/rules',   label: 'Rules',       icon: BookOpen },
   ];
 
   const isActive = (path: string) => {
-    if (path === '/') {
-      return location.pathname === '/';
-    }
+    if (path === '/') return location.pathname === '/';
     return location.pathname.startsWith(path);
   };
 
@@ -40,17 +39,17 @@ export function Layout() {
       {/* Navigation */}
       <nav className="bg-white border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex space-x-8">
+          <div className="flex space-x-8 overflow-x-auto">
             {navItems.map((item) => {
               const Icon = item.icon;
               const active = isActive(item.path);
-              
+
               return (
                 <Link
                   key={item.path}
                   to={item.path}
                   className={`
-                    flex items-center gap-2 px-3 py-4 border-b-2 transition-colors
+                    flex items-center gap-2 px-3 py-4 border-b-2 transition-colors whitespace-nowrap
                     ${
                       active
                         ? 'border-blue-500 text-blue-600'
