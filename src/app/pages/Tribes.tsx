@@ -181,7 +181,13 @@ export function Tribes() {
                               <div className="flex items-center gap-2 mt-0.5">
                                 <span
                                   className={`inline-flex items-center px-1.5 py-0.5 rounded text-xs font-medium ${
-                                    contestant.tribe === 'Blue'
+                                    contestant.tribe === 'Vatu'
+                                      ? 'bg-purple-100 text-purple-700'
+                                      : contestant.tribe === 'Cila'
+                                      ? 'bg-orange-100 text-orange-700'
+                                      : contestant.tribe === 'Kalo'
+                                      ? 'bg-teal-100 text-teal-700'
+                                      : contestant.tribe === 'Blue'
                                       ? 'bg-blue-100 text-blue-700'
                                       : 'bg-red-100 text-red-700'
                                   }`}
