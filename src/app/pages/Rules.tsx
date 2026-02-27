@@ -1,4 +1,45 @@
-import { BookOpen, Users, Target, Calendar, Award, Trophy, Star, Zap } from 'lucide-react';
+import { BookOpen, Users, Target, Calendar, Award, Trophy, Star, Zap, Skull } from 'lucide-react';
+import { useGame } from '../context/GameContext';
+
+// ─── Static tribe data ────────────────────────────────────────────────────────
+const TRIBES = [
+  {
+    name: 'Vatu',
+    color: 'purple',
+    members: ['Angelina', 'Aubry', 'Colby', 'Genevieve', 'Kyle', 'Q', 'Rizo', 'Stephenie'],
+    styles: {
+      header: 'bg-purple-600',
+      border: 'border-purple-300',
+      badge: 'bg-purple-100 text-purple-800',
+      dot: 'bg-purple-500',
+      nameBg: 'bg-purple-50',
+    },
+  },
+  {
+    name: 'Cila',
+    color: 'orange',
+    members: ['Christian', 'Cirie', 'Emily', 'Jenna', 'Joe', 'Ozzy', 'Rick', 'Savannah'],
+    styles: {
+      header: 'bg-orange-500',
+      border: 'border-orange-300',
+      badge: 'bg-orange-100 text-orange-800',
+      dot: 'bg-orange-400',
+      nameBg: 'bg-orange-50',
+    },
+  },
+  {
+    name: 'Kalo',
+    color: 'teal',
+    members: ['Charlie', 'Chrissy', 'Coach', 'Dee', 'Jonathan', 'Kamilla', 'Mike', 'Tiffany'],
+    styles: {
+      header: 'bg-teal-600',
+      border: 'border-teal-300',
+      badge: 'bg-teal-100 text-teal-800',
+      dot: 'bg-teal-500',
+      nameBg: 'bg-teal-50',
+    },
+  },
+];
 
 // ─── Reusable score row ───────────────────────────────────────────────────────
 function ScoreRow({ points, label }: { points: number; label: string }) {
@@ -30,8 +71,8 @@ function ScoreCategory({
   items: string[];
 }) {
   const styles = {
-    green:  { header: 'bg-green-600',  badge: 'bg-green-100 text-green-800',  border: 'border-green-200' },
-    blue:   { header: 'bg-blue-600',   badge: 'bg-blue-100 text-blue-800',    border: 'border-blue-200'  },
+    green:  { header: 'bg-green-600',  badge: 'bg-green-100 text-green-800',   border: 'border-green-200'  },
+    blue:   { header: 'bg-blue-600',   badge: 'bg-blue-100 text-blue-800',     border: 'border-blue-200'   },
     purple: { header: 'bg-purple-600', badge: 'bg-purple-100 text-purple-800', border: 'border-purple-200' },
   }[color];
 
@@ -57,6 +98,16 @@ function ScoreCategory({
 
 // ─── Page ─────────────────────────────────────────────────────────────────────
 export function Rules() {
+  const { contestants } = useGame();
+
+  // Build a lookup of name → isEliminated from live Supabase data
+  const eliminatedMap: Record<string, boolean> = {};
+  contestants.forEach((c) => {
+    eliminatedMap[c.name.toLowerCase()] = c.isEliminated;
+  });
+
+  const isEliminated = (name: string) => eliminatedMap[name.toLowerCase()] ?? false;
+
   return (
     <div className="space-y-6">
       {/* Page Header */}
@@ -114,6 +165,70 @@ export function Rules() {
               </p>
             </div>
 
+            {/* ── Tribe cards ── */}
+            <div className="pt-2">
+              <p className="text-sm font-semibold text-gray-600 uppercase tracking-wide mb-3">
+                Season Castaways by Tribe
+              </p>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                {TRIBES.map((tribe) => (
+                  <div
+                    key={tribe.name}
+                    className={`rounded-xl border-2 ${tribe.styles.border} overflow-hidden`}
+                  >
+                    {/* Tribe header */}
+                    <div className={`${tribe.styles.header} px-4 py-3 flex items-center gap-2`}>
+                      <div className="size-3 rounded-full bg-white/40" />
+                      <span className="text-white font-bold text-base">{tribe.name}</span>
+                      <span className="ml-auto text-white/70 text-xs font-medium">
+                        {tribe.members.filter((m) => !isEliminated(m)).length} remaining
+                      </span>
+                    </div>
+
+                    {/* Contestant list */}
+                    <div className={`${tribe.styles.nameBg} divide-y divide-white/60`}>
+                      {tribe.members.map((name) => {
+                        const eliminated = isEliminated(name);
+                        return (
+                          <div
+                            key={name}
+                            className={`px-4 py-2.5 flex items-center justify-between gap-2 ${
+                              eliminated ? 'opacity-50' : ''
+                            }`}
+                          >
+                            <div className="flex items-center gap-2">
+                              {eliminated ? (
+                                <Skull className="size-3.5 text-gray-400 shrink-0" />
+                              ) : (
+                                <div className={`size-2 rounded-full ${tribe.styles.dot} shrink-0`} />
+                              )}
+                              <span
+                                className={`text-sm font-medium ${
+                                  eliminated
+                                    ? 'line-through text-gray-400'
+                                    : 'text-gray-800'
+                                }`}
+                              >
+                                {name}
+                              </span>
+                            </div>
+                            {eliminated && (
+                              <span className="text-xs text-gray-400 font-medium shrink-0">
+                                Out
+                              </span>
+                            )}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <p className="text-xs text-gray-400 mt-3 text-center">
+                Strikethrough indicates the castaway has been eliminated. Updates automatically.
+              </p>
+            </div>
+
             {/* Merge bonus callout */}
             <div className="mt-2 bg-amber-50 border border-amber-300 rounded-xl p-5">
               <div className="flex items-center gap-2 mb-2">
@@ -146,8 +261,8 @@ export function Rules() {
                 Survival Points
               </h4>
               <div className="bg-gray-50 rounded-lg border border-gray-200 px-4 py-1">
-                <ScoreRow points={1}  label="Per castaway for each week they survive prior to the merge" />
-                <ScoreRow points={3}  label="Per castaway for each week they survive post-merge" />
+                <ScoreRow points={1} label="Per castaway for each week they survive prior to the merge" />
+                <ScoreRow points={3} label="Per castaway for each week they survive post-merge" />
               </div>
             </div>
 
@@ -180,7 +295,6 @@ export function Rules() {
               </p>
 
               <div className="space-y-4">
-
                 <ScoreCategory
                   pts={5}
                   color="green"
@@ -203,7 +317,6 @@ export function Rules() {
                     'Is chosen to go on a journey',
                   ]}
                 />
-
                 <ScoreCategory
                   pts={10}
                   color="blue"
@@ -211,25 +324,24 @@ export function Rules() {
                     'Wins an individual Reward Challenge',
                     'Finds a hidden immunity idol',
                     'Voted out while in possession of a hidden immunity idol or game advantage',
-                    'Plays their \'Shot in the Dark\'',
+                    "Plays their 'Shot in the Dark'",
                     'Torch gets snuffed as a result of a blindside',
                     'Gets treated for a medical emergency',
                     'Chooses to forfeit the game',
                     'Catches seafood or wildlife',
-                    'Tampers with or steals the tribe\'s food',
+                    "Tampers with or steals the tribe's food",
                     'Plays a fake immunity idol at Tribal Council',
-                    'Searches through someone else\'s bag',
+                    "Searches through someone else's bag",
                     'Voted out unanimously',
                     'A hidden immunity idol is played on them by another player',
                   ]}
                 />
-
                 <ScoreCategory
                   pts={15}
                   color="purple"
                   items={[
                     'Wins an individual Immunity Challenge',
-                    'Draws a SAFE scroll as a result of playing their \'Shot in the Dark\'',
+                    "Draws a SAFE scroll as a result of playing their 'Shot in the Dark'",
                     'Wins a fire-making challenge',
                     'Gives an immunity idol/necklace away or plays it for another player',
                     'Creates a fake immunity idol',
@@ -237,13 +349,12 @@ export function Rules() {
                     'Is forced to leave the game by no choice of their own (aside from being voted off)',
                   ]}
                 />
-
               </div>
             </div>
           </div>
         </div>
 
-        {/* ── Weekly Updates (kept) ── */}
+        {/* ── Weekly Updates ── */}
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
           <div className="px-6 py-4 bg-gray-50 border-b border-gray-200 flex items-center gap-3">
             <Calendar className="size-6 text-orange-600" />
@@ -263,18 +374,17 @@ export function Rules() {
           </div>
         </div>
 
-        {/* ── Winning (kept) ── */}
+        {/* ── Winning ── */}
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
           <div className="px-6 py-4 bg-gray-50 border-b border-gray-200 flex items-center gap-3">
             <Award className="size-6 text-yellow-600" />
             <h3 className="text-lg font-semibold text-gray-900">Winning the League</h3>
           </div>
-          <div className="p-6 space-y-3">
+          <div className="p-6">
             <p className="text-gray-700 leading-relaxed">
               The family member with the highest total points at the end of the Survivor season is
               crowned the Fantasy League Champion!
             </p>
-
           </div>
         </div>
 
