@@ -7,9 +7,88 @@ import {
   ChevronDown,
   Loader2,
   RefreshCw,
+  Lock,
+  Eye,
+  EyeOff,
 } from 'lucide-react';
 
-export function Admin() {
+const ADMIN_PASSWORD = 'red-panda';
+
+// ─── Password gate ────────────────────────────────────────────────────────────
+function PasswordGate({ onUnlock }: { onUnlock: () => void }) {
+  const [input, setInput] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState(false);
+
+  const handleSubmit = () => {
+    if (input === ADMIN_PASSWORD) {
+      sessionStorage.setItem('admin_unlocked', 'true');
+      onUnlock();
+    } else {
+      setError(true);
+      setInput('');
+      setTimeout(() => setError(false), 3000);
+    }
+  };
+
+  return (
+    <div className="flex flex-col items-center justify-center min-h-64 py-16">
+      <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-8 w-full max-w-sm space-y-6">
+        <div className="flex flex-col items-center gap-3 text-center">
+          <div className="size-14 bg-yellow-50 border border-yellow-200 rounded-full flex items-center justify-center">
+            <Lock className="size-7 text-yellow-600" />
+          </div>
+          <div>
+            <h3 className="text-xl font-bold text-gray-900">Admin Access</h3>
+            <p className="text-sm text-gray-500 mt-1">Enter the password to continue</p>
+          </div>
+        </div>
+
+        <div className="space-y-3">
+          <div className="relative">
+            <input
+              type={showPassword ? 'text' : 'password'}
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              onKeyDown={(e) => e.key === 'Enter' && handleSubmit()}
+              placeholder="Password"
+              autoFocus
+              className={`w-full px-4 py-3 pr-11 border rounded-lg text-sm focus:outline-none focus:ring-2 transition-colors ${
+                error
+                  ? 'border-red-400 focus:ring-red-300 bg-red-50'
+                  : 'border-gray-300 focus:ring-blue-300'
+              }`}
+            />
+            <button
+              onClick={() => setShowPassword((v) => !v)}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+              tabIndex={-1}
+            >
+              {showPassword ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
+            </button>
+          </div>
+
+          {error && (
+            <div className="flex items-center gap-2 text-red-600 text-sm">
+              <AlertCircle className="size-4 shrink-0" />
+              Incorrect password. Please try again.
+            </div>
+          )}
+
+          <button
+            onClick={handleSubmit}
+            className="w-full py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors"
+          >
+            Unlock
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─── Admin panel ──────────────────────────────────────────────────────────────
+function AdminPanel() {
   const {
     contestants,
     currentWeek,
@@ -25,12 +104,10 @@ export function Admin() {
   const [saveStatus, setSaveStatus] = useState<'idle' | 'saving' | 'success' | 'error'>('idle');
   const [saveError, setSaveError] = useState<string | null>(null);
 
-  // Keep selectedWeek in sync once data loads
   useEffect(() => {
     setSelectedWeek(currentWeek);
   }, [currentWeek]);
 
-  // Populate score inputs from existing Supabase data for the chosen week
   const loadWeekScores = (weekNumber: number) => {
     const weekData = getWeeklyBreakdown(weekNumber);
     const initial: Record<string, string> = {};
@@ -76,7 +153,6 @@ export function Admin() {
     }
   };
 
-  // Total weeks is 13 by convention; allow editing up to max(currentWeek+1, 13)
   const totalWeeks = Math.max(currentWeek + 1, 13);
   const weekOptions = Array.from({ length: totalWeeks }, (_, i) => i + 1);
 
@@ -173,20 +249,17 @@ export function Admin() {
                     <div className="font-medium text-gray-900">{contestant.name}</div>
                     <div className="flex items-center gap-2 mt-1">
                       <span
-                        className={`
-                          inline-flex items-center px-2 py-0.5 rounded text-xs font-medium
-                          ${
-                            contestant.tribe === 'Vatu'
-                              ? 'bg-purple-100 text-purple-700'
-                              : contestant.tribe === 'Cila'
-                              ? 'bg-orange-100 text-orange-700'
-                              : contestant.tribe === 'Kalo'
-                              ? 'bg-teal-100 text-teal-700'
-                              : contestant.tribe === 'Blue'
-                              ? 'bg-blue-100 text-blue-700'
-                              : 'bg-red-100 text-red-700'
-                          }
-                        `}
+                        className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${
+                          contestant.tribe === 'Vatu'
+                            ? 'bg-purple-100 text-purple-700'
+                            : contestant.tribe === 'Cila'
+                            ? 'bg-orange-100 text-orange-700'
+                            : contestant.tribe === 'Kalo'
+                            ? 'bg-teal-100 text-teal-700'
+                            : contestant.tribe === 'Blue'
+                            ? 'bg-blue-100 text-blue-700'
+                            : 'bg-red-100 text-red-700'
+                        }`}
                       >
                         {contestant.tribe}
                       </span>
@@ -201,7 +274,7 @@ export function Admin() {
                     <input
                       type="number"
                       min="0"
-                      max="100"
+                      max="999"
                       value={scores[contestant.id] ?? ''}
                       onChange={(e) => handleScoreChange(contestant.id, e.target.value)}
                       placeholder="0"
@@ -260,13 +333,12 @@ export function Admin() {
           </li>
           <li className="flex items-start gap-2">
             <span className="font-medium">2.</span>
-            <span>Enter point values for each contestant (0–100 points)</span>
+            <span>Enter point values for each contestant</span>
           </li>
           <li className="flex items-start gap-2">
             <span className="font-medium">3.</span>
             <span>
-              Click <strong>Load Existing Scores</strong> to populate inputs with previously saved
-              values
+              Click <strong>Load Existing Scores</strong> to populate inputs with previously saved values
             </span>
           </li>
           <li className="flex items-start gap-2">
@@ -278,14 +350,19 @@ export function Admin() {
           </li>
         </ul>
       </div>
-
-      {/* Production note */}
-      <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
-        <p className="text-sm text-gray-600">
-          <strong>Note:</strong> In production, protect this route with Supabase Auth + Row Level
-          Security so only authorized family members can edit scores.
-        </p>
-      </div>
     </div>
   );
+}
+
+// ─── Main export ──────────────────────────────────────────────────────────────
+export function Admin() {
+  const [unlocked, setUnlocked] = useState(
+    () => sessionStorage.getItem('admin_unlocked') === 'true'
+  );
+
+  if (!unlocked) {
+    return <PasswordGate onUnlock={() => setUnlocked(true)} />;
+  }
+
+  return <AdminPanel />;
 }
