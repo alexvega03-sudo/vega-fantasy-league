@@ -274,13 +274,7 @@ export function Rules() {
               The family member with the highest total points at the end of the Survivor season is
               crowned the Fantasy League Champion!
             </p>
-            <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-              <div className="font-semibold text-yellow-900 mb-1">🏆 Grand Prize</div>
-              <p className="text-sm text-yellow-800">
-                Bragging rights for the entire year + winner picks the location for next year's
-                family vacation!
-              </p>
-            </div>
+
           </div>
         </div>
 
