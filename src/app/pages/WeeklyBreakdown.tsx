@@ -127,9 +127,7 @@ export function WeeklyBreakdown() {
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Points
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Status
-                </th>
+
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-200">
@@ -155,17 +153,7 @@ export function WeeklyBreakdown() {
                         {score?.points || 0}
                       </span>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <span
-                        className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                          contestant.isEliminated
-                            ? 'bg-gray-100 text-gray-800'
-                            : 'bg-green-100 text-green-800'
-                        }`}
-                      >
-                        {contestant.isEliminated ? 'Eliminated' : 'Active'}
-                      </span>
-                    </td>
+
                   </tr>
                 );
               })}
