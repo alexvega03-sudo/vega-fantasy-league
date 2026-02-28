@@ -1,6 +1,16 @@
 import { useGame } from '../context/GameContext';
 import { Trophy, Medal, Award, TrendingUp, RefreshCw, AlertCircle, Loader2 } from 'lucide-react';
 
+// Darken a hex color by a given amount so the gradient has visible depth
+function darkenHex(hex: string, amount = 40): string {
+  const clean = hex.replace('#', '');
+  const num = parseInt(clean, 16);
+  const r = Math.max(0, (num >> 16) - amount);
+  const g = Math.max(0, ((num >> 8) & 0xff) - amount);
+  const b = Math.max(0, (num & 0xff) - amount);
+  return `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
+}
+
 export function Leaderboard() {
   const { getLeaderboard, loading, error, refetch } = useGame();
 
@@ -33,6 +43,9 @@ export function Leaderboard() {
   }
 
   const leaderboard = getLeaderboard();
+  const leader = leaderboard[0];
+  const leaderColor = leader?.familyMember.color ?? '#3b82f6';
+  const leaderColorDark = darkenHex(leaderColor, 50);
 
   return (
     <div className="space-y-6">
@@ -62,16 +75,21 @@ export function Leaderboard() {
         </div>
       ) : (
         <>
-          {/* Leader Highlight Card */}
-          <div className="bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl p-6 text-white shadow-lg">
+          {/* Leader Highlight Card — gradient uses the leader's player color */}
+          <div
+            className="rounded-xl p-6 text-white shadow-lg"
+            style={{
+              background: `linear-gradient(135deg, ${leaderColor} 0%, ${leaderColorDark} 100%)`,
+            }}
+          >
             <div className="flex items-center justify-between">
               <div>
                 <div className="flex items-center gap-2 mb-2">
                   <Trophy className="size-6" />
                   <span className="text-sm font-medium opacity-90">Current Leader</span>
                 </div>
-                <h3 className="text-4xl font-bold">{leaderboard[0].familyMember.name}</h3>
-                <p className="text-2xl font-semibold mt-2">{leaderboard[0].totalPoints} points</p>
+                <h3 className="text-4xl font-bold">{leader.familyMember.name}</h3>
+                <p className="text-2xl font-semibold mt-2">{leader.totalPoints} points</p>
               </div>
               <div className="size-20 bg-white/20 rounded-full flex items-center justify-center">
                 <Trophy className="size-12" />
@@ -97,10 +115,9 @@ export function Leaderboard() {
                 return (
                   <div
                     key={entry.familyMember.id}
-                    className={`
-                      px-6 py-5 flex items-center justify-between transition-colors
-                      ${isLeader ? 'bg-blue-50/50' : 'hover:bg-gray-50'}
-                    `}
+                    className={`px-6 py-5 flex items-center justify-between ${
+                      isLeader ? 'bg-gray-50/80' : ''
+                    }`}
                   >
                     <div className="flex items-center gap-4 flex-1">
                       {/* Rank */}
@@ -120,22 +137,14 @@ export function Leaderboard() {
 
                       {/* Name */}
                       <div className="flex-1">
-                        <h4
-                          className={`text-lg font-semibold ${
-                            isLeader ? 'text-blue-600' : 'text-gray-900'
-                          }`}
-                        >
+                        <h4 className="text-lg font-semibold text-gray-900">
                           {entry.familyMember.name}
                         </h4>
                       </div>
 
                       {/* Points */}
                       <div className="text-right">
-                        <div
-                          className={`text-3xl font-bold ${
-                            isLeader ? 'text-blue-600' : 'text-gray-900'
-                          }`}
-                        >
+                        <div className="text-3xl font-bold text-gray-900">
                           {entry.totalPoints}
                         </div>
                         <div className="text-sm text-gray-500">points</div>
@@ -155,9 +164,7 @@ export function Leaderboard() {
             </div>
             <div className="bg-white rounded-lg border border-gray-200 p-4">
               <div className="text-sm text-gray-500 mb-1">Highest Score</div>
-              <div className="text-2xl font-bold text-gray-900">
-                {leaderboard[0].totalPoints}
-              </div>
+              <div className="text-2xl font-bold text-gray-900">{leader.totalPoints}</div>
             </div>
             <div className="bg-white rounded-lg border border-gray-200 p-4">
               <div className="text-sm text-gray-500 mb-1">Average Score</div>
