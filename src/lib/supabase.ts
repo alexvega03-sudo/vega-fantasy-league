@@ -18,6 +18,7 @@ export interface DbPlayer {
   id: string;
   name: string;
   color: string;
+  mvp_contestant_id: string | null;
   created_at: string;
 }
 

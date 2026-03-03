@@ -21,6 +21,7 @@ export interface FamilyMember {
   id: string;
   name: string;
   color: string;
+  mvpContestantId: string | null;
 }
 
 export interface WeeklyScore {
@@ -73,7 +74,6 @@ export function GameProvider({ children }: { children: ReactNode }) {
     setError(null);
 
     try {
-      // Run all queries in parallel
       const [
         { data: playersData, error: playersError },
         { data: contestantsData, error: contestantsError },
@@ -87,15 +87,15 @@ export function GameProvider({ children }: { children: ReactNode }) {
       ]);
 
       if (playersError) throw new Error(`Players fetch failed: ${playersError.message}`);
-      if (contestantsError) throw new Error(`Contestants fetch failed: ${contestantsError.message}`);
+      if (contestantsError) throw new Error(`Castaways fetch failed: ${contestantsError.message}`);
       if (scoresError) throw new Error(`Scores fetch failed: ${scoresError.message}`);
       if (picksError) throw new Error(`Picks fetch failed: ${picksError.message}`);
 
-      // Map DB rows → app types
       const mappedPlayers: FamilyMember[] = (playersData as DbPlayer[]).map((p) => ({
         id: p.id,
         name: p.name,
         color: p.color,
+        mvpContestantId: p.mvp_contestant_id ?? null,
       }));
 
       const mappedContestants: Contestant[] = (contestantsData as DbContestant[]).map((c) => ({
@@ -111,14 +111,12 @@ export function GameProvider({ children }: { children: ReactNode }) {
         points: s.points,
       }));
 
-      // Build draftPicks map: { player_id: [contestant_id, ...] }
       const picksMap: Record<string, string[]> = {};
       (picksData as DbPlayerPick[]).forEach((pick) => {
         if (!picksMap[pick.player_id]) picksMap[pick.player_id] = [];
         picksMap[pick.player_id].push(pick.contestant_id);
       });
 
-      // Derive current week from the latest week that has scores
       const maxWeek = mappedScores.reduce((max, s) => Math.max(max, s.weekNumber), 1);
 
       setFamilyMembers(mappedPlayers);
@@ -137,7 +135,6 @@ export function GameProvider({ children }: { children: ReactNode }) {
     fetchAllData();
   }, [fetchAllData]);
 
-  // ─── Upsert weekly scores to Supabase ──────────────────────────────────────
   const updateWeeklyScores = async (
     weekNumber: number,
     scores: { contestantId: string; points: number }[]
@@ -152,11 +149,8 @@ export function GameProvider({ children }: { children: ReactNode }) {
       .from('weekly_scores')
       .upsert(rows, { onConflict: 'week_number,contestant_id' });
 
-    if (upsertError) {
-      throw new Error(`Failed to save scores: ${upsertError.message}`);
-    }
+    if (upsertError) throw new Error(`Failed to save scores: ${upsertError.message}`);
 
-    // Optimistically update local state
     setWeeklyScores((prev) => {
       const updated = [...prev];
       scores.forEach(({ contestantId, points }) => {
@@ -172,11 +166,8 @@ export function GameProvider({ children }: { children: ReactNode }) {
       return updated;
     });
 
-    // Also bump currentWeek if needed
     setCurrentWeek((prev) => Math.max(prev, weekNumber));
   };
-
-  // ─── Derived calculations ──────────────────────────────────────────────────
 
   const getLeaderboard = useCallback((): LeaderboardEntry[] => {
     const entries = familyMembers.map((member) => {
