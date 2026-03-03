@@ -32,8 +32,8 @@ export function Tribes() {
     );
   }
 
-  // Calculate total points for a contestant across all weeks
-  const getContestantTotalPoints = (contestantId: string) => {
+  // Calculate total points for a castaway across all weeks
+  const getCastawayTotalPoints = (contestantId: string) => {
     return weeklyScores
       .filter((s) => s.contestantId === contestantId)
       .reduce((sum, s) => sum + s.points, 0);
@@ -42,7 +42,7 @@ export function Tribes() {
   // Calculate total points for a player's full tribe
   const getPlayerTotalPoints = (playerId: string) => {
     const picks = draftPicks[playerId] || [];
-    return picks.reduce((sum, cId) => sum + getContestantTotalPoints(cId), 0);
+    return picks.reduce((sum, cId) => sum + getCastawayTotalPoints(cId), 0);
   };
 
   return (
@@ -51,7 +51,7 @@ export function Tribes() {
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-3xl font-bold text-gray-900">Fantasy Tribes</h2>
-          <p className="text-gray-500 mt-1">Each player's drafted contestants</p>
+          <p className="text-gray-500 mt-1">Each player's drafted castaways</p>
         </div>
         <div className="flex items-center gap-3">
           <button
@@ -72,7 +72,7 @@ export function Tribes() {
           <div className="text-2xl font-bold text-gray-900">{familyMembers.length}</div>
         </div>
         <div>
-          <div className="text-xs text-gray-500 uppercase tracking-wide mb-1">Contestants</div>
+          <div className="text-xs text-gray-500 uppercase tracking-wide mb-1">Castaways</div>
           <div className="text-2xl font-bold text-gray-900">{contestants.length}</div>
         </div>
         <div>
@@ -104,12 +104,12 @@ export function Tribes() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {familyMembers.map((member) => {
             const picks = draftPicks[member.id] || [];
-            const memberContestants = picks
+            const memberCastaways = picks
               .map((cId) => contestants.find((c) => c.id === cId))
               .filter(Boolean) as typeof contestants;
             const totalPoints = getPlayerTotalPoints(member.id);
-            const activeCount = memberContestants.filter((c) => !c.isEliminated).length;
-            const eliminatedCount = memberContestants.filter((c) => c.isEliminated).length;
+            const activeCount = memberCastaways.filter((c) => !c.isEliminated).length;
+            const eliminatedCount = memberCastaways.filter((c) => c.isEliminated).length;
 
             return (
               <div
@@ -143,58 +143,65 @@ export function Tribes() {
                   </div>
                 </div>
 
-                {/* Contestant list */}
+                {/* Castaway list */}
                 <div className="divide-y divide-gray-100">
-                  {memberContestants.length === 0 ? (
+                  {memberCastaways.length === 0 ? (
                     <div className="px-6 py-8 text-center text-gray-400 text-sm">
                       No picks assigned yet
                     </div>
                   ) : (
-                    memberContestants.map((contestant) => {
-                      const pts = getContestantTotalPoints(contestant.id);
+                    memberCastaways.map((castaway) => {
+                      const pts = getCastawayTotalPoints(castaway.id);
+                      const isMvp = member.mvpContestantId === castaway.id;
+
                       return (
                         <div
-                          key={contestant.id}
+                          key={castaway.id}
                           className={`px-6 py-3 flex items-center justify-between transition-colors ${
-                            contestant.isEliminated ? 'opacity-50 bg-gray-50' : 'hover:bg-gray-50'
+                            castaway.isEliminated ? 'opacity-50 bg-gray-50' : 'hover:bg-gray-50'
                           }`}
                         >
                           <div className="flex items-center gap-3">
                             {/* Status icon */}
-                            {contestant.isEliminated ? (
+                            {castaway.isEliminated ? (
                               <Skull className="size-4 text-gray-400 shrink-0" />
                             ) : (
                               <Flame className="size-4 text-orange-400 shrink-0" />
                             )}
 
                             <div>
-                              <span
-                                className={`font-medium text-sm ${
-                                  contestant.isEliminated
-                                    ? 'line-through text-gray-400'
-                                    : 'text-gray-900'
-                                }`}
-                              >
-                                {contestant.name}
-                              </span>
+                              <div className="flex items-center gap-1.5">
+                                <span
+                                  className={`font-medium text-sm ${
+                                    castaway.isEliminated
+                                      ? 'line-through text-gray-400'
+                                      : 'text-gray-900'
+                                  }`}
+                                >
+                                  {castaway.name}
+                                </span>
+                                {isMvp && (
+                                  <span title="MVP" className="text-base leading-none">👑</span>
+                                )}
+                              </div>
 
                               <div className="flex items-center gap-2 mt-0.5">
                                 <span
                                   className={`inline-flex items-center px-1.5 py-0.5 rounded text-xs font-medium ${
-                                    contestant.tribe === 'Vatu'
+                                    castaway.tribe === 'Vatu'
                                       ? 'bg-purple-100 text-purple-700'
-                                      : contestant.tribe === 'Cila'
+                                      : castaway.tribe === 'Cila'
                                       ? 'bg-orange-100 text-orange-700'
-                                      : contestant.tribe === 'Kalo'
+                                      : castaway.tribe === 'Kalo'
                                       ? 'bg-teal-100 text-teal-700'
-                                      : contestant.tribe === 'Blue'
+                                      : castaway.tribe === 'Blue'
                                       ? 'bg-blue-100 text-blue-700'
                                       : 'bg-red-100 text-red-700'
                                   }`}
                                 >
-                                  {contestant.tribe}
+                                  {castaway.tribe}
                                 </span>
-                                {contestant.isEliminated && (
+                                {castaway.isEliminated && (
                                   <span className="text-xs text-gray-400">Eliminated</span>
                                 )}
                               </div>
