@@ -24,12 +24,14 @@ export function Layout() {
           <div className="flex justify-between items-center h-16">
             {/* Site name */}
             <div className="flex items-center gap-3">
-              <div className="size-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
+              <div className="size-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center shrink-0">
                 <Trophy className="size-6 text-white" />
               </div>
               <div>
-                <h1 className="font-bold text-gray-900">Vega Family</h1>
-                <p className="text-sm text-gray-500">Survivor League</p>
+                <h1 className="font-bold text-gray-900 leading-tight">
+                  Vega Family Survivor Fantasy League
+                </h1>
+                <p className="text-sm font-medium text-gray-900">Season 50</p>
               </div>
             </div>
 
@@ -37,7 +39,7 @@ export function Layout() {
             <Link
               to="/admin"
               title="Admin Panel"
-              className={`p-2 rounded-lg transition-colors ${
+              className={`p-2 rounded-lg transition-colors shrink-0 ${
                 isActive('/admin')
                   ? 'text-blue-600 bg-blue-50'
                   : 'text-gray-400 hover:text-gray-600 hover:bg-gray-100'

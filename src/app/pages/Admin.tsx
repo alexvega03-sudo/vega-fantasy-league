@@ -236,34 +236,34 @@ function AdminPanel() {
         <div className="p-6">
           {contestants.length === 0 ? (
             <p className="text-gray-400 text-sm text-center py-8">
-              No contestants found. Add contestants in your Supabase dashboard first.
+              No castaways found. Add castaways in your Supabase dashboard first.
             </p>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {contestants.map((contestant) => (
+              {contestants.map((castaway) => (
                 <div
-                  key={contestant.id}
+                  key={castaway.id}
                   className="flex items-center justify-between p-4 bg-gray-50 rounded-lg border border-gray-200"
                 >
                   <div className="flex-1">
-                    <div className="font-medium text-gray-900">{contestant.name}</div>
+                    <div className="font-medium text-gray-900">{castaway.name}</div>
                     <div className="flex items-center gap-2 mt-1">
                       <span
                         className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${
-                          contestant.tribe === 'Vatu'
+                          castaway.tribe === 'Vatu'
                             ? 'bg-purple-100 text-purple-700'
-                            : contestant.tribe === 'Cila'
+                            : castaway.tribe === 'Cila'
                             ? 'bg-orange-100 text-orange-700'
-                            : contestant.tribe === 'Kalo'
+                            : castaway.tribe === 'Kalo'
                             ? 'bg-teal-100 text-teal-700'
-                            : contestant.tribe === 'Blue'
+                            : castaway.tribe === 'Blue'
                             ? 'bg-blue-100 text-blue-700'
                             : 'bg-red-100 text-red-700'
                         }`}
                       >
-                        {contestant.tribe}
+                        {castaway.tribe}
                       </span>
-                      {contestant.isEliminated && (
+                      {castaway.isEliminated && (
                         <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-200 text-gray-700">
                           Eliminated
                         </span>
@@ -275,10 +275,10 @@ function AdminPanel() {
                       type="number"
                       min="0"
                       max="999"
-                      value={scores[contestant.id] ?? ''}
-                      onChange={(e) => handleScoreChange(contestant.id, e.target.value)}
+                      value={scores[castaway.id] ?? ''}
+                      onChange={(e) => handleScoreChange(castaway.id, e.target.value)}
                       placeholder="0"
-                      disabled={contestant.isEliminated}
+                      disabled={castaway.isEliminated}
                       className="w-20 px-3 py-2 text-center text-lg font-semibold border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed"
                     />
                   </div>
@@ -333,7 +333,7 @@ function AdminPanel() {
           </li>
           <li className="flex items-start gap-2">
             <span className="font-medium">2.</span>
-            <span>Enter point values for each contestant</span>
+            <span>Enter point values for each castaway</span>
           </li>
           <li className="flex items-start gap-2">
             <span className="font-medium">3.</span>

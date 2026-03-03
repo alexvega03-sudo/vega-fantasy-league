@@ -88,7 +88,7 @@ export function WeeklyBreakdown() {
                     />
                   </div>
 
-                  {/* Contestant Details */}
+                  {/* Castaway Details */}
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pl-7">
                     {data.contestantScores.map((cs) => (
                       <div
@@ -106,11 +106,11 @@ export function WeeklyBreakdown() {
         </div>
       </div>
 
-      {/* Contestants Table */}
+      {/* Castaways Table */}
       <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
         <div className="px-6 py-4 border-b border-gray-200 bg-gray-50">
           <h3 className="text-lg font-semibold text-gray-900">
-            All Contestants — Week {selectedWeek}
+            All Castaways — Week {selectedWeek}
           </h3>
         </div>
 
@@ -119,7 +119,7 @@ export function WeeklyBreakdown() {
             <thead className="bg-gray-50 border-b border-gray-200">
               <tr>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Contestant
+                  Castaway
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Tribe
@@ -127,25 +127,24 @@ export function WeeklyBreakdown() {
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Points
                 </th>
-
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-200">
-              {contestants.map((contestant) => {
+              {contestants.map((castaway) => {
                 const score = weeklyData
                   .flatMap((d) => d.contestantScores)
-                  .find((cs) => cs.contestant?.id === contestant.id);
+                  .find((cs) => cs.contestant?.id === castaway.id);
 
                 return (
-                  <tr key={contestant.id} className="hover:bg-gray-50">
+                  <tr key={castaway.id} className="hover:bg-gray-50">
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="font-medium text-gray-900">{contestant.name}</div>
+                      <div className="font-medium text-gray-900">{castaway.name}</div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <span
-                        className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${tribeClass(contestant.tribe)}`}
+                        className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${tribeClass(castaway.tribe)}`}
                       >
-                        {contestant.tribe}
+                        {castaway.tribe}
                       </span>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
@@ -153,7 +152,6 @@ export function WeeklyBreakdown() {
                         {score?.points || 0}
                       </span>
                     </td>
-
                   </tr>
                 );
               })}
