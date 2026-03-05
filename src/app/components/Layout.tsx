@@ -29,7 +29,7 @@ export function Layout() {
               </div>
               <div>
                 <h1 className="font-bold text-gray-900 leading-tight">
-                  Vega Family Survivor Fantasy League
+                  Vega Family Survivor
                 </h1>
                 <p className="text-sm font-medium text-gray-900">Season 50</p>
               </div>
@@ -90,7 +90,7 @@ export function Layout() {
       <footer className="bg-white border-t border-gray-200 mt-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <p className="text-center text-sm text-gray-500">
-            © 2026 Vega Family Survivor Fantasy League. All rights reserved.
+            © 2026 Vega Family Survivor. All rights reserved.
           </p>
         </div>
       </footer>
