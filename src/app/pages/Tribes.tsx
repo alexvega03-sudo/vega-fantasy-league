@@ -104,9 +104,16 @@ export function Tribes() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {familyMembers.map((member) => {
             const picks = draftPicks[member.id] || [];
+            const TRIBE_ORDER: Record<string, number> = { Cila: 0, Kalo: 1, Vatu: 2 };
             const memberCastaways = picks
               .map((cId) => contestants.find((c) => c.id === cId))
               .filter(Boolean) as typeof contestants;
+            memberCastaways.sort((a, b) => {
+              const tribeA = TRIBE_ORDER[a.tribe] ?? 99;
+              const tribeB = TRIBE_ORDER[b.tribe] ?? 99;
+              if (tribeA !== tribeB) return tribeA - tribeB;
+              return a.name.localeCompare(b.name);
+            });
             const totalPoints = getPlayerTotalPoints(member.id);
             const activeCount = memberCastaways.filter((c) => !c.isEliminated).length;
             const eliminatedCount = memberCastaways.filter((c) => c.isEliminated).length;
