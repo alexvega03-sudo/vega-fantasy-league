@@ -106,18 +106,28 @@ function AdminPanel() {
 
   useEffect(() => {
     setSelectedWeek(currentWeek);
+    loadWeekScores(currentWeek);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentWeek]);
 
   const loadWeekScores = (weekNumber: number) => {
+    // Build a flat map of all existing scores for this week from Supabase data
     const weekData = getWeeklyBreakdown(weekNumber);
-    const initial: Record<string, string> = {};
+    const existingScores: Record<string, string> = {};
     weekData.forEach((entry) => {
       entry.contestantScores.forEach(({ contestant, points }) => {
         if (contestant) {
-          initial[contestant.id] = points > 0 ? points.toString() : '';
+          existingScores[contestant.id] = points > 0 ? points.toString() : '';
         }
       });
     });
+
+    // Seed inputs for ALL castaways, including those not in anyone's picks
+    const initial: Record<string, string> = {};
+    contestants.forEach((c) => {
+      initial[c.id] = existingScores[c.id] ?? '';
+    });
+
     setScores(initial);
     setSaveStatus('idle');
     setSaveError(null);
