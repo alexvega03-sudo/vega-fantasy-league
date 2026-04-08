@@ -39,10 +39,15 @@ export function Tribes() {
       .reduce((sum, s) => sum + s.points, 0);
   };
 
-  // Calculate total points for a player's full tribe
+  // Calculate total points for a player's full tribe, respecting pickWeek
   const getPlayerTotalPoints = (playerId: string) => {
     const picks = draftPicks[playerId] || [];
-    return picks.reduce((sum, cId) => sum + getCastawayTotalPoints(cId), 0);
+    return picks.reduce((sum, pick) => {
+      const pts = weeklyScores
+        .filter((s) => s.contestantId === pick.contestantId && s.weekNumber >= pick.pickWeek)
+        .reduce((s, ws) => s + ws.points, 0);
+      return sum + pts;
+    }, 0);
   };
 
   return (
@@ -77,7 +82,7 @@ export function Tribes() {
         </div>
         <div>
           <div className="text-xs text-gray-500 uppercase tracking-wide mb-1">Picks per player</div>
-          <div className="text-2xl font-bold text-gray-900">9</div>
+          <div className="text-2xl font-bold text-gray-900">10</div>
         </div>
         <div>
           <div className="text-xs text-gray-500 uppercase tracking-wide mb-1">Still active</div>
@@ -106,8 +111,11 @@ export function Tribes() {
             const picks = draftPicks[member.id] || [];
             const TRIBE_ORDER: Record<string, number> = { Cila: 0, Kalo: 1, Vatu: 2 };
             const memberCastaways = picks
-              .map((cId) => contestants.find((c) => c.id === cId))
-              .filter(Boolean) as typeof contestants;
+              .map((pick) => {
+                const contestant = contestants.find((c) => c.id === pick.contestantId);
+                return contestant ? { ...contestant, pickWeek: pick.pickWeek } : null;
+              })
+              .filter(Boolean) as (typeof contestants[0] & { pickWeek: number })[];
             memberCastaways.sort((a, b) => {
               const tribeA = TRIBE_ORDER[a.tribe] ?? 99;
               const tribeB = TRIBE_ORDER[b.tribe] ?? 99;
@@ -158,7 +166,10 @@ export function Tribes() {
                     </div>
                   ) : (
                     memberCastaways.map((castaway) => {
-                      const pts = getCastawayTotalPoints(castaway.id);
+                      const pts = weeklyScores
+                        .filter((s) => s.contestantId === castaway.id && s.weekNumber >= castaway.pickWeek)
+                        .reduce((sum, s) => sum + s.points, 0);
+                      const isLatePick = castaway.pickWeek > 1;
                       const isMvp = member.mvpContestantId === castaway.id;
 
                       return (
@@ -189,6 +200,14 @@ export function Tribes() {
                                 </span>
                                 {isMvp && (
                                   <span title="MVP" className="text-base leading-none">👑</span>
+                                )}
+                                {isLatePick && (
+                                  <span
+                                    title={`Post-Merge Pick — points count from Week ${castaway.pickWeek}`}
+                                    className="inline-flex items-center px-1.5 py-0.5 rounded text-xs font-medium bg-amber-100 text-amber-700"
+                                  >
+                                    Post-Merge Pick
+                                  </span>
                                 )}
                               </div>
 
@@ -235,10 +254,10 @@ export function Tribes() {
                 </div>
 
                 {/* Card footer — picks remaining */}
-                {picks.length < 9 && (
+                {picks.length < 10 && (
                   <div className="px-6 py-3 bg-yellow-50 border-t border-yellow-100">
                     <p className="text-xs text-yellow-700 font-medium">
-                      {9 - picks.length} pick{9 - picks.length !== 1 ? 's' : ''} remaining
+                      {10 - picks.length} pick{10 - picks.length !== 1 ? 's' : ''} remaining
                     </p>
                   </div>
                 )}

@@ -30,6 +30,11 @@ export interface WeeklyScore {
   points: number;
 }
 
+export interface DraftPick {
+  contestantId: string;
+  pickWeek: number; // week from which this pick's points start counting
+}
+
 export interface LeaderboardEntry {
   familyMember: FamilyMember;
   totalPoints: number;
@@ -38,14 +43,14 @@ export interface LeaderboardEntry {
 export interface WeeklyBreakdownEntry {
   familyMember: FamilyMember;
   weekTotal: number;
-  contestantScores: { contestant: Contestant | undefined; points: number }[];
+  contestantScores: { contestant: Contestant | undefined; points: number; pickWeek: number; counted: boolean }[];
 }
 
 interface GameContextType {
   contestants: Contestant[];
   familyMembers: FamilyMember[];
   weeklyScores: WeeklyScore[];
-  draftPicks: Record<string, string[]>;
+  draftPicks: Record<string, DraftPick[]>;
   currentWeek: number;
   loading: boolean;
   error: string | null;
@@ -64,7 +69,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
   const [contestants, setContestants] = useState<Contestant[]>([]);
   const [familyMembers, setFamilyMembers] = useState<FamilyMember[]>([]);
   const [weeklyScores, setWeeklyScores] = useState<WeeklyScore[]>([]);
-  const [draftPicks, setDraftPicks] = useState<Record<string, string[]>>({});
+  const [draftPicks, setDraftPicks] = useState<Record<string, DraftPick[]>>({});
   const [currentWeek, setCurrentWeek] = useState(1);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -111,10 +116,13 @@ export function GameProvider({ children }: { children: ReactNode }) {
         points: s.points,
       }));
 
-      const picksMap: Record<string, string[]> = {};
+      const picksMap: Record<string, DraftPick[]> = {};
       (picksData as DbPlayerPick[]).forEach((pick) => {
         if (!picksMap[pick.player_id]) picksMap[pick.player_id] = [];
-        picksMap[pick.player_id].push(pick.contestant_id);
+        picksMap[pick.player_id].push({
+          contestantId: pick.contestant_id,
+          pickWeek: pick.pick_week ?? 1,
+        });
       });
 
       const maxWeek = mappedScores.reduce((max, s) => Math.max(max, s.weekNumber), 1);
@@ -171,9 +179,12 @@ export function GameProvider({ children }: { children: ReactNode }) {
 
   const getLeaderboard = useCallback((): LeaderboardEntry[] => {
     const entries = familyMembers.map((member) => {
-      const memberContestantIds = draftPicks[member.id] || [];
+      const memberPicks = draftPicks[member.id] || [];
       const totalPoints = weeklyScores
-        .filter((s) => memberContestantIds.includes(s.contestantId))
+        .filter((s) => {
+          const pick = memberPicks.find((p) => p.contestantId === s.contestantId);
+          return pick !== undefined && s.weekNumber >= pick.pickWeek;
+        })
         .reduce((sum, s) => sum + s.points, 0);
       return { familyMember: member, totalPoints };
     });
@@ -184,19 +195,19 @@ export function GameProvider({ children }: { children: ReactNode }) {
     (weekNumber: number): WeeklyBreakdownEntry[] => {
       const weekScores = weeklyScores.filter((s) => s.weekNumber === weekNumber);
       return familyMembers.map((member) => {
-        const memberContestantIds = draftPicks[member.id] || [];
-        const memberWeekScores = weekScores.filter((s) =>
-          memberContestantIds.includes(s.contestantId)
-        );
-        const weekTotal = memberWeekScores.reduce((sum, s) => sum + s.points, 0);
-        return {
-          familyMember: member,
-          weekTotal,
-          contestantScores: memberContestantIds.map((cId) => ({
-            contestant: contestants.find((c) => c.id === cId),
-            points: weekScores.find((s) => s.contestantId === cId)?.points ?? 0,
-          })),
-        };
+        const memberPicks = draftPicks[member.id] || [];
+        const contestantScores = memberPicks.map((pick) => {
+          const counted = weekNumber >= pick.pickWeek;
+          const rawPoints = weekScores.find((s) => s.contestantId === pick.contestantId)?.points ?? 0;
+          return {
+            contestant: contestants.find((c) => c.id === pick.contestantId),
+            points: counted ? rawPoints : 0,
+            pickWeek: pick.pickWeek,
+            counted,
+          };
+        });
+        const weekTotal = contestantScores.reduce((sum, cs) => sum + cs.points, 0);
+        return { familyMember: member, weekTotal, contestantScores };
       });
     },
     [familyMembers, draftPicks, weeklyScores, contestants]

@@ -42,5 +42,6 @@ export interface DbPlayerPick {
   id: string;
   player_id: string;
   contestant_id: string;
+  pick_week: number;
   created_at: string;
 }
