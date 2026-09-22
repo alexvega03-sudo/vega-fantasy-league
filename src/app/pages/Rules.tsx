@@ -1,45 +1,40 @@
-import { BookOpen, Users, Target, Calendar, Award, Trophy, Star, Zap, Skull } from 'lucide-react';
+import { BookOpen, Users, Target, Calendar, Award, Trophy, Star, Zap, Skull, ExternalLink } from 'lucide-react';
 import { useGame } from '../context/GameContext';
 
-// ─── Static tribe data ────────────────────────────────────────────────────────
-const TRIBES = [
-  {
-    name: 'Vatu',
-    color: 'purple',
-    members: ['Angelina', 'Aubry', 'Colby', 'Genevieve', 'Kyle', 'Q', 'Rizo', 'Stephenie'],
-    styles: {
-      header: 'bg-purple-600',
-      border: 'border-purple-300',
-      badge: 'bg-purple-100 text-purple-800',
-      dot: 'bg-purple-500',
-      nameBg: 'bg-purple-50',
-    },
+const TRIBE_STYLES: Record<
+  string,
+  { header: string; border: string; badge: string; dot: string; nameBg: string }
+> = {
+  Vatu: {
+    header: 'bg-purple-600',
+    border: 'border-purple-300',
+    badge: 'bg-purple-100 text-purple-800',
+    dot: 'bg-purple-500',
+    nameBg: 'bg-purple-50',
   },
-  {
-    name: 'Cila',
-    color: 'orange',
-    members: ['Christian', 'Cirie', 'Emily', 'Jenna', 'Joe', 'Ozzy', 'Rick', 'Savannah'],
-    styles: {
-      header: 'bg-orange-500',
-      border: 'border-orange-300',
-      badge: 'bg-orange-100 text-orange-800',
-      dot: 'bg-orange-400',
-      nameBg: 'bg-orange-50',
-    },
+  Cila: {
+    header: 'bg-orange-500',
+    border: 'border-orange-300',
+    badge: 'bg-orange-100 text-orange-800',
+    dot: 'bg-orange-400',
+    nameBg: 'bg-orange-50',
   },
-  {
-    name: 'Kalo',
-    color: 'teal',
-    members: ['Charlie', 'Chrissy', 'Coach', 'Dee', 'Jonathan', 'Kamilla', 'Mike', 'Tiffany'],
-    styles: {
-      header: 'bg-teal-600',
-      border: 'border-teal-300',
-      badge: 'bg-teal-100 text-teal-800',
-      dot: 'bg-teal-500',
-      nameBg: 'bg-teal-50',
-    },
+  Kalo: {
+    header: 'bg-teal-600',
+    border: 'border-teal-300',
+    badge: 'bg-teal-100 text-teal-800',
+    dot: 'bg-teal-500',
+    nameBg: 'bg-teal-50',
   },
-];
+};
+
+const FALLBACK_TRIBE_STYLES = {
+  header: 'bg-blue-600',
+  border: 'border-blue-300',
+  badge: 'bg-blue-100 text-blue-800',
+  dot: 'bg-blue-500',
+  nameBg: 'bg-blue-50',
+};
 
 // ─── Reusable score row ───────────────────────────────────────────────────────
 function ScoreRow({ points, label }: { points: number; label: string }) {
@@ -98,15 +93,20 @@ function ScoreCategory({
 
 // ─── Page ─────────────────────────────────────────────────────────────────────
 export function Rules() {
-  const { contestants } = useGame();
+  const { contestants, season } = useGame();
 
-  // Build a lookup of name → isEliminated from live Supabase data
-  const eliminatedMap: Record<string, boolean> = {};
-  contestants.forEach((c) => {
-    eliminatedMap[c.name.toLowerCase()] = c.isEliminated;
-  });
-
-  const isEliminated = (name: string) => eliminatedMap[name.toLowerCase()] ?? false;
+  const tribes = Array.from(
+    contestants.reduce((map, contestant) => {
+      const members = map.get(contestant.tribe) ?? [];
+      members.push(contestant);
+      map.set(contestant.tribe, members);
+      return map;
+    }, new Map<string, typeof contestants>())
+  ).map(([name, members]) => ({
+    name,
+    members: [...members].sort((a, b) => a.name.localeCompare(b.name)),
+    styles: TRIBE_STYLES[name] ?? FALLBACK_TRIBE_STYLES,
+  }));
 
   return (
     <div className="space-y-6">
@@ -165,33 +165,51 @@ export function Rules() {
               </p>
             </div>
 
+            {!season.archived && (
+              <div className="pt-1">
+                <a
+                  href="https://www.globaltv.com/shows/survivor/cast/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center justify-center gap-2 px-4 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium text-center"
+                >
+                  Check out the Season 51 cast bios to help with your decision
+                  <ExternalLink className="size-4 shrink-0" />
+                </a>
+              </div>
+            )}
+
             {/* ── Tribe cards ── */}
             <div className="pt-2">
               <p className="text-sm font-semibold text-gray-600 uppercase tracking-wide mb-3">
                 Season Castaways by Tribe
               </p>
+              {tribes.length === 0 ? (
+                <div className="rounded-xl border border-dashed border-gray-300 bg-gray-50 px-4 py-8 text-center text-sm text-gray-500">
+                  Castaways will be listed here after the season begins.
+                </div>
+              ) : (
+                <>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                {TRIBES.map((tribe) => (
+                {tribes.map((tribe) => (
                   <div
                     key={tribe.name}
                     className={`rounded-xl border-2 ${tribe.styles.border} overflow-hidden`}
                   >
-                    {/* Tribe header */}
                     <div className={`${tribe.styles.header} px-4 py-3 flex items-center gap-2`}>
                       <div className="size-3 rounded-full bg-white/40" />
                       <span className="text-white font-bold text-base">{tribe.name}</span>
                       <span className="ml-auto text-white/70 text-xs font-medium">
-                        {tribe.members.filter((m) => !isEliminated(m)).length} remaining
+                        {tribe.members.filter((member) => !member.isEliminated).length} remaining
                       </span>
                     </div>
 
-                    {/* Contestant list */}
                     <div className={`${tribe.styles.nameBg} divide-y divide-white/60`}>
-                      {tribe.members.map((name) => {
-                        const eliminated = isEliminated(name);
+                      {tribe.members.map((member) => {
+                        const eliminated = member.isEliminated;
                         return (
                           <div
-                            key={name}
+                            key={member.id}
                             className={`px-4 py-2.5 flex items-center justify-between gap-2 ${
                               eliminated ? 'opacity-50' : ''
                             }`}
@@ -209,7 +227,7 @@ export function Rules() {
                                     : 'text-gray-800'
                                 }`}
                               >
-                                {name}
+                                {member.name}
                               </span>
                             </div>
                             {eliminated && (
@@ -227,6 +245,8 @@ export function Rules() {
               <p className="text-xs text-gray-400 mt-3 text-center">
                 Strikethrough indicates the castaway has been eliminated. Updates automatically.
               </p>
+                </>
+              )}
             </div>
 
             {/* Merge bonus callout */}

@@ -13,14 +13,32 @@ const tribeClass = (tribe: string) => {
 };
 
 export function WeeklyBreakdown() {
-  const { getWeeklyBreakdown, contestants, currentWeek } = useGame();
+  const { getWeeklyBreakdown, contestants, currentWeek, hasStarted, season } = useGame();
   const [selectedWeek, setSelectedWeek] = useState(currentWeek || 1);
 
   const weeklyData = getWeeklyBreakdown(selectedWeek);
   const weekScores = weeklyData.map((d) => d.weekTotal);
   const maxScore = Math.max(...weekScores, 0);
 
-  const weekOptions = Array.from({ length: currentWeek || 1 }, (_, i) => i + 1);
+  const weekOptions = Array.from({ length: Math.max(currentWeek, 1) }, (_, i) => i + 1);
+
+  if (!hasStarted) {
+    return (
+      <div className="space-y-6">
+        <div>
+          <h2 className="text-3xl font-bold text-gray-900">Weekly Breakdown</h2>
+          <p className="text-gray-500 mt-1">View scores by week</p>
+        </div>
+        <div className="bg-gray-50 rounded-xl border border-gray-200 p-12 text-center text-gray-400">
+          <BarChart3 className="size-12 mx-auto mb-3 opacity-40" />
+          <p className="font-medium">No weekly scores yet</p>
+          <p className="text-sm mt-1">
+            {season.label} weekly results will show up here after the first scored episode.
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">

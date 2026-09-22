@@ -1,5 +1,5 @@
 // Reusable loading spinner component
-// Can be used when fetching data from Supabase
+// Can be used when fetching league data
 
 interface LoadingSpinnerProps {
   size?: 'sm' | 'md' | 'lg';

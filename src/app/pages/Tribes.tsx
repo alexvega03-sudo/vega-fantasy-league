@@ -1,36 +1,8 @@
 import { useGame } from '../context/GameContext';
-import { Users, Flame, Loader2, AlertCircle, RefreshCw, Skull, Star } from 'lucide-react';
+import { Users, Flame, Skull, Star } from 'lucide-react';
 
 export function Tribes() {
-  const { familyMembers, contestants, draftPicks, weeklyScores, loading, error, refetch } = useGame();
-
-  if (loading) {
-    return (
-      <div className="flex flex-col items-center justify-center min-h-64 gap-4">
-        <Loader2 className="size-10 text-blue-500 animate-spin" />
-        <p className="text-gray-500 text-sm">Loading tribes from Supabase…</p>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="rounded-xl bg-red-50 border border-red-200 p-6 flex flex-col items-center gap-4 text-center">
-        <AlertCircle className="size-10 text-red-500" />
-        <div>
-          <h3 className="font-semibold text-red-900 text-lg">Failed to load tribes</h3>
-          <p className="text-red-700 text-sm mt-1">{error}</p>
-        </div>
-        <button
-          onClick={refetch}
-          className="flex items-center gap-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors text-sm font-medium"
-        >
-          <RefreshCw className="size-4" />
-          Retry
-        </button>
-      </div>
-    );
-  }
+  const { familyMembers, contestants, draftPicks, weeklyScores, season } = useGame();
 
   // Calculate total points for a castaway across all weeks
   const getCastawayTotalPoints = (contestantId: string) => {
@@ -58,16 +30,7 @@ export function Tribes() {
           <h2 className="text-3xl font-bold text-gray-900">Fantasy Tribes</h2>
           <p className="text-gray-500 mt-1">Each player's drafted castaways</p>
         </div>
-        <div className="flex items-center gap-3">
-          <button
-            onClick={refetch}
-            title="Refresh data"
-            className="p-2 rounded-lg text-gray-400 hover:text-blue-500 hover:bg-blue-50 transition-colors"
-          >
-            <RefreshCw className="size-5" />
-          </button>
-          <Users className="size-8 text-blue-500" />
-        </div>
+        <Users className="size-8 text-blue-500" />
       </div>
 
       {/* Draft summary bar */}
@@ -99,11 +62,19 @@ export function Tribes() {
       </div>
 
       {/* Tribe cards — one per family member */}
-      {familyMembers.length === 0 ? (
+      {contestants.length === 0 ? (
+        <div className="bg-gray-50 rounded-xl border border-gray-200 p-12 text-center text-gray-400">
+          <Users className="size-12 mx-auto mb-3 opacity-40" />
+          <p className="font-medium">Draft not in yet</p>
+          <p className="text-sm mt-1">
+            {season.label} fantasy tribes will appear here after everyone makes their picks.
+          </p>
+        </div>
+      ) : familyMembers.length === 0 ? (
         <div className="bg-gray-50 rounded-xl border border-gray-200 p-12 text-center text-gray-400">
           <Users className="size-12 mx-auto mb-3 opacity-40" />
           <p className="font-medium">No players found</p>
-          <p className="text-sm mt-1">Add players in your Supabase dashboard first.</p>
+          <p className="text-sm mt-1">Add players in the league data file first.</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
