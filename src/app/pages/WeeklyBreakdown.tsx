@@ -96,7 +96,7 @@ export function WeeklyBreakdown() {
                   </div>
 
                   {/* Progress Bar */}
-                  <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
+                  <div className="score-bar-track h-2 bg-gray-100 rounded-full overflow-hidden">
                     <div
                       className="h-full transition-all duration-500 rounded-full"
                       style={{
@@ -154,7 +154,7 @@ export function WeeklyBreakdown() {
                   .find((cs) => cs.contestant?.id === castaway.id);
 
                 return (
-                  <tr key={castaway.id} className="hover:bg-gray-50">
+                  <tr key={castaway.id}>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="font-medium text-gray-900">{castaway.name}</div>
                     </td>

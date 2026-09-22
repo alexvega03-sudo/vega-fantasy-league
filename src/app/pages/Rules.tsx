@@ -72,8 +72,8 @@ function ScoreCategory({
   }[color];
 
   return (
-    <div className={`rounded-xl border ${styles.border} overflow-hidden`}>
-      <div className={`${styles.header} px-5 py-3 flex items-center gap-3`}>
+    <div className={`score-category rounded-xl border ${styles.border} overflow-hidden`}>
+      <div className={`score-category-header ${styles.header} px-5 py-3 flex items-center gap-3`}>
         <span className="text-white font-bold text-lg">+{pts}</span>
         <span className="text-white font-semibold text-sm">Point Categories</span>
       </div>
@@ -117,15 +117,6 @@ export function Rules() {
           <p className="text-gray-500 mt-1">How the Vega Family Survivor Fantasy League works</p>
         </div>
         <BookOpen className="size-8 text-blue-500" />
-      </div>
-
-      {/* Welcome banner */}
-      <div className="bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl p-8 text-white shadow-lg">
-        <h3 className="text-2xl font-bold mb-3">Welcome to the Fantasy League!</h3>
-        <p className="text-lg opacity-90">
-          Each family member drafts Survivor contestants and earns points based on their
-          performance throughout the season. The player with the most points at the end wins!
-        </p>
       </div>
 
       <div className="space-y-4">

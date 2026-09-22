@@ -1,21 +1,11 @@
 import { useGame } from '../context/GameContext';
 import { Trophy, Medal, Award, TrendingUp } from 'lucide-react';
 
-function darkenHex(hex: string, amount = 40): string {
-  const clean = hex.replace('#', '');
-  const num = parseInt(clean, 16);
-  const r = Math.max(0, (num >> 16) - amount);
-  const g = Math.max(0, ((num >> 8) & 0xff) - amount);
-  const b = Math.max(0, (num & 0xff) - amount);
-  return `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
-}
-
 export function Leaderboard() {
   const { getLeaderboard, hasStarted, season } = useGame();
   const leaderboard = getLeaderboard();
   const leader = leaderboard[0];
   const leaderColor = leader?.familyMember.color ?? '#3b82f6';
-  const leaderColorDark = darkenHex(leaderColor, 50);
 
   return (
     <div className="space-y-6">
@@ -41,9 +31,7 @@ export function Leaderboard() {
         <>
           <div
             className="rounded-xl p-6 text-white shadow-lg"
-            style={{
-              background: `linear-gradient(135deg, ${leaderColor} 0%, ${leaderColorDark} 100%)`,
-            }}
+            style={{ background: leaderColor }}
           >
             <div className="flex items-center justify-between">
               <div>

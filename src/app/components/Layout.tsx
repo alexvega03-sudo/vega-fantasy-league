@@ -4,6 +4,7 @@ import { GameProvider, useGame } from '../context/GameContext';
 import { CURRENT_SEASON_ID, isSeasonId, seasons } from '../data/seasons';
 import { pagePathFromLocation, seasonPagePath } from '../lib/seasonPath';
 import { NotFound } from '../pages/NotFound';
+import { ShieldMark } from './ShieldMark';
 
 const navItems = [
   { path: '/', label: 'Leaderboard', icon: Trophy },
@@ -55,16 +56,16 @@ function LayoutFrame() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <header className="bg-white border-b border-gray-200 sticky top-0 z-50">
+    <div className="site-shell min-h-screen bg-gray-50">
+      <header className="site-header bg-white border-b border-gray-200 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16 gap-4">
             <div className="flex items-center gap-3 min-w-0">
-              <div className="size-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center shrink-0">
-                <Trophy className="size-6 text-white" />
+              <div className="site-mark size-10 flex items-center justify-center shrink-0">
+                <ShieldMark />
               </div>
               <div className="min-w-0">
-                <h1 className="font-bold text-gray-900 leading-tight truncate">
+                <h1 className="site-title font-bold text-gray-900 leading-tight truncate">
                   Vega Family Survivor
                 </h1>
                 <p className="text-sm font-medium text-gray-900">
@@ -78,12 +79,14 @@ function LayoutFrame() {
               </div>
             </div>
 
-            <SeasonSwitcher />
+            <div className="flex items-center gap-2 shrink-0">
+              <SeasonSwitcher />
+            </div>
           </div>
         </div>
       </header>
 
-      <nav className="bg-white border-b border-gray-200">
+      <nav className="site-nav bg-white border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex space-x-8 overflow-x-auto">
             {navItems.map((item) => {
@@ -94,11 +97,12 @@ function LayoutFrame() {
                 <Link
                   key={item.path}
                   to={seasonPagePath(season.id, item.path)}
+                  aria-current={active ? 'page' : undefined}
                   className={`
                     flex items-center gap-2 px-3 py-4 border-b-2 transition-colors whitespace-nowrap
                     ${
                       active
-                        ? 'border-blue-500 text-blue-600'
+                        ? 'nav-link-active border-blue-500 text-blue-600'
                         : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
                     }
                   `}
@@ -113,7 +117,7 @@ function LayoutFrame() {
       </nav>
 
       {season.archived && (
-        <div className="bg-amber-50 border-b border-amber-200">
+        <div className="archive-banner bg-amber-50 border-b border-amber-200">
           <p className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2 text-sm text-amber-900">
             This is a read-only archive of {season.label}. Switch to Season 51 for the current league.
           </p>
@@ -124,7 +128,7 @@ function LayoutFrame() {
         <Outlet />
       </main>
 
-      <footer className="bg-white border-t border-gray-200 mt-16">
+      <footer className="site-footer bg-white border-t border-gray-200 mt-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <p className="text-center text-sm text-gray-500">
             © 2026 Vega Family Survivor. All rights reserved.

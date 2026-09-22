@@ -147,7 +147,7 @@ export function Tribes() {
                         <div
                           key={castaway.id}
                           className={`px-6 py-3 flex items-center justify-between transition-colors ${
-                            castaway.isEliminated ? 'opacity-50 bg-gray-50' : 'hover:bg-gray-50'
+                            castaway.isEliminated ? 'opacity-50 bg-gray-50' : ''
                           }`}
                         >
                           <div className="flex items-center gap-3">

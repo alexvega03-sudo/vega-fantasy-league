@@ -1,0 +1,291 @@
+/* Tribe visual language — the app's only look. */
+
+:root {
+  --sand: #e8cfa8;
+  --sand-deep: #d4b48a;
+  --paper: #fbf3e4;
+  --ink: #24160f;
+  --ink-soft: #5c4333;
+  --terracotta: #c44520;
+  --terracotta-hot: #e85a2a;
+  --mustard: #e8b84a;
+  --leaf: #6b9b3a;
+  --sage: #3f7a64;
+  --mint: #3ddc97;
+  --violet: #5b3cc4;
+  --cream: #fff8eb;
+  --stroke: #2b1a12;
+  --card-shadow: rgba(43, 26, 18, 0.16);
+  color-scheme: light;
+}
+
+body {
+  font-family: "Nunito", "Trebuchet MS", sans-serif;
+  color: var(--ink);
+  background-color: var(--sand);
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='140' height='140' viewBox='0 0 140 140'><rect width='140' height='140' fill='%23e8cfa8'/><g fill='none' stroke='%23c44520' stroke-width='1.4' opacity='0.28'><path d='M12 18h16M12 24h10'/><path d='M108 22l8-8 8 8-8 8z'/><path d='M40 70h28M40 76h18'/><path d='M18 100c8 0 8 12 16 12s8-12 16-12'/><path d='M96 96h24M96 102h14'/></g><g fill='%236b9b3a' opacity='0.22'><circle cx='28' cy='52' r='3'/><circle cx='118' cy='64' r='2.5'/><circle cx='70' cy='24' r='2'/></g><g fill='%232b1a12' opacity='0.14'><rect x='62' y='48' width='6' height='6' transform='rotate(45 65 51)'/><rect x='20' y='118' width='5' height='5' transform='rotate(45 22.5 120.5)'/></g><path d='M78 110l8 4-8 4-8-4z' fill='%23e8b84a' opacity='0.3'/></svg>");
+  background-attachment: fixed;
+}
+
+body::before {
+  content: "";
+  pointer-events: none;
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  opacity: 0.07;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/></filter><rect width='180' height='180' filter='url(%23n)' opacity='0.55'/></svg>");
+}
+
+h1,
+h2,
+h3,
+.font-bold,
+.font-semibold {
+  font-family: "Walter Turncoat", "Trebuchet MS", sans-serif;
+  letter-spacing: 0.02em;
+}
+
+.text-sm {
+  font-family: "Walter Turncoat", sans-serif;
+  font-size: 0.9rem;
+}
+
+.site-shell {
+  background: transparent !important;
+}
+
+.site-header,
+.site-nav,
+.site-footer {
+  background: var(--paper) !important;
+  border-color: var(--stroke) !important;
+}
+
+.site-header {
+  border-bottom-width: 4px !important;
+  box-shadow: 0 8px 0 rgba(43, 26, 18, 0.08);
+}
+
+.site-header::after {
+  content: "";
+  display: block;
+  height: 10px;
+  background: var(--terracotta);
+  clip-path: polygon(
+    0 40%,
+    4% 0,
+    8% 70%,
+    12% 10%,
+    18% 100%,
+    24% 20%,
+    30% 80%,
+    36% 0,
+    42% 90%,
+    50% 15%,
+    58% 100%,
+    66% 25%,
+    74% 85%,
+    82% 5%,
+    90% 70%,
+    96% 20%,
+    100% 60%,
+    100% 100%,
+    0 100%
+  );
+}
+
+.site-title {
+  font-family: "Walter Turncoat", sans-serif;
+  font-size: 1.2rem;
+  line-height: 1.1;
+}
+
+.site-mark {
+  width: 2.75rem;
+  height: 2.75rem;
+  background: var(--mustard) !important;
+  border: 3px solid var(--stroke);
+  border-radius: 42% 58% 50% 50% / 38% 32% 68% 62%;
+  box-shadow: 3px 3px 0 var(--stroke);
+  transform: rotate(-6deg);
+  animation: tribal-wiggle 3.6s ease-in-out infinite;
+}
+
+.site-mark svg {
+  display: block;
+  width: 1.65rem;
+  height: 1.65rem;
+}
+
+.site-nav {
+  border-bottom-width: 3px !important;
+}
+
+.site-nav a {
+  border-bottom: 0 !important;
+  color: var(--ink-soft) !important;
+  padding: 0.85rem 0.9rem !important;
+  transform: rotate(-1.2deg);
+}
+
+.site-nav a:nth-child(even) {
+  transform: rotate(1.4deg);
+}
+
+.site-nav a:hover {
+  color: var(--terracotta) !important;
+}
+
+.site-nav a[aria-current="page"],
+.nav-link-active {
+  color: var(--terracotta) !important;
+  background: rgba(232, 184, 74, 0.35);
+  border-radius: 1.4rem 0.5rem 1.6rem 0.7rem / 0.7rem 1.5rem 0.5rem 1.3rem;
+  box-shadow: 2px 2px 0 var(--stroke);
+}
+
+.site-footer {
+  border-top-width: 4px !important;
+  margin-top: 4rem !important;
+}
+
+.archive-banner {
+  background: #fff0c8 !important;
+  border-color: var(--stroke) !important;
+  border-bottom-width: 3px !important;
+}
+
+.text-gray-900,
+.text-gray-800,
+.text-gray-700 {
+  color: var(--ink) !important;
+}
+
+.text-gray-600,
+.text-gray-500,
+.text-gray-400 {
+  color: var(--ink-soft) !important;
+}
+
+.bg-gray-50,
+.bg-gray-50\/80 {
+  background-color: rgba(251, 243, 228, 0.72) !important;
+}
+
+.bg-white {
+  background-color: var(--cream) !important;
+}
+
+.border-gray-200,
+.border-gray-100,
+.border-gray-300,
+.divide-gray-200 > :not(:last-child),
+.divide-gray-100 > :not(:last-child) {
+  border-color: var(--stroke) !important;
+}
+
+.rounded-xl,
+.rounded-2xl,
+.rounded-lg {
+  border-radius: 1.35rem 0.45rem 1.5rem 0.6rem / 0.7rem 1.4rem 0.5rem 1.25rem !important;
+}
+
+main .rounded-xl,
+main .rounded-2xl {
+  border-width: 3px !important;
+  border-color: var(--stroke) !important;
+  box-shadow: 5px 6px 0 var(--card-shadow);
+}
+
+main .space-y-6 > .rounded-xl:nth-child(odd),
+main .space-y-4 > .rounded-xl:nth-child(odd) {
+  transform: rotate(-0.35deg);
+}
+
+main .space-y-6 > .rounded-xl:nth-child(even),
+main .space-y-4 > .rounded-xl:nth-child(even) {
+  transform: rotate(0.45deg);
+}
+
+.score-bar-track {
+  background-color: var(--card-shadow) !important;
+}
+
+.text-3xl {
+  font-family: "Walter Turncoat", sans-serif;
+  letter-spacing: 0.01em;
+}
+
+.text-blue-600,
+.text-blue-500 {
+  color: var(--terracotta) !important;
+}
+
+.border-blue-500 {
+  border-color: var(--terracotta) !important;
+}
+
+.bg-blue-600 {
+  background-color: var(--terracotta) !important;
+  border: 3px solid var(--stroke);
+  box-shadow: 3px 3px 0 var(--stroke);
+  border-radius: 1.1rem 0.4rem 1.2rem 0.55rem / 0.6rem 1.1rem 0.45rem 1rem !important;
+}
+
+a.bg-blue-600:hover,
+button.bg-blue-600:hover,
+a.hover\:bg-blue-700:hover,
+button.hover\:bg-blue-700:hover {
+  background-color: var(--terracotta-hot) !important;
+  transform: rotate(-1.5deg) scale(1.03);
+}
+
+.score-category-header {
+  border: 0 !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+  transform: none !important;
+}
+
+.bg-red-50,
+.bg-amber-50,
+.bg-blue-50 {
+  background-color: #fff1d6 !important;
+}
+
+.text-red-900,
+.text-amber-900,
+.text-blue-900 {
+  color: var(--ink) !important;
+}
+
+select {
+  background-color: var(--cream) !important;
+  border: 3px solid var(--stroke) !important;
+  border-radius: 1rem 0.4rem 1.1rem 0.5rem / 0.55rem 1rem 0.4rem 0.9rem !important;
+  box-shadow: 2px 2px 0 var(--stroke);
+  font-family: "Walter Turncoat", sans-serif;
+  color: var(--ink) !important;
+}
+
+@keyframes tribal-wiggle {
+  0%,
+  100% {
+    transform: rotate(-6deg);
+  }
+  50% {
+    transform: rotate(5deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .site-mark,
+  main .rounded-xl,
+  main .rounded-2xl,
+  .bg-blue-600 {
+    animation: none;
+    transition: none;
+  }
+}
