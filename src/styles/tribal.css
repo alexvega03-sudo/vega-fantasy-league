@@ -98,8 +98,14 @@ h3,
 
 .site-title {
   font-family: "Walter Turncoat", sans-serif;
-  font-size: 1.2rem;
+  font-size: 1.05rem;
   line-height: 1.1;
+}
+
+@media (min-width: 640px) {
+  .site-title {
+    font-size: 1.2rem;
+  }
 }
 
 .site-mark {
@@ -121,17 +127,63 @@ h3,
 
 .site-nav {
   border-bottom-width: 3px !important;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  isolation: isolate;
+  background-color: var(--paper) !important;
+  box-shadow: 0 6px 0 rgba(43, 26, 18, 0.08);
+}
+
+main {
+  position: relative;
+  z-index: 0;
+  isolation: isolate;
+}
+
+.site-nav-row {
+  overflow-x: auto;
+  overflow-y: hidden;
+  overscroll-behavior-x: contain;
+  overscroll-behavior-y: none;
+  scrollbar-width: none;
+  min-height: 3.25rem;
+}
+
+.site-nav-row::-webkit-scrollbar {
+  display: none;
 }
 
 .site-nav a {
   border-bottom: 0 !important;
   color: var(--ink-soft) !important;
-  padding: 0.85rem 0.9rem !important;
-  transform: rotate(-1.2deg);
+  padding: 0.55rem 0.1rem !important;
+  transform: none;
+  overflow: hidden;
 }
 
 .site-nav a:nth-child(even) {
-  transform: rotate(1.4deg);
+  transform: none;
+}
+
+.site-nav a .text-sm {
+  font-size: 0.72rem;
+}
+
+@media (min-width: 640px) {
+  .site-nav a {
+    padding: 0.85rem 0.9rem !important;
+    transform: rotate(-1.2deg);
+    overflow: visible;
+  }
+
+  .site-nav a:nth-child(even) {
+    transform: rotate(1.4deg);
+  }
+
+  .site-nav a .text-sm {
+    font-size: 0.9rem;
+  }
 }
 
 .site-nav a:hover {
@@ -144,6 +196,14 @@ h3,
   background: rgba(232, 184, 74, 0.35);
   border-radius: 1.4rem 0.5rem 1.6rem 0.7rem / 0.7rem 1.5rem 0.5rem 1.3rem;
   box-shadow: 2px 2px 0 var(--stroke);
+}
+
+@media (max-width: 639px) {
+  .site-nav a[aria-current="page"],
+  .nav-link-active {
+    border-radius: 0.75rem 0.3rem 0.85rem 0.35rem / 0.4rem 0.8rem 0.3rem 0.7rem;
+    box-shadow: 1px 1px 0 var(--stroke);
+  }
 }
 
 .site-footer {
@@ -268,6 +328,40 @@ select {
   box-shadow: 2px 2px 0 var(--stroke);
   font-family: "Walter Turncoat", sans-serif;
   color: var(--ink) !important;
+}
+
+@media (max-width: 639px) {
+  .site-header-row {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) auto !important;
+    align-items: center;
+    overflow: visible;
+  }
+
+  #season-switcher {
+    width: 4.75rem !important;
+    max-width: 4.75rem;
+    min-width: 0;
+  }
+
+  .site-nav-row {
+    display: grid !important;
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+    gap: 0.15rem;
+  }
+
+  .site-nav a {
+    min-width: 0 !important;
+    justify-content: center;
+  }
+
+  .site-nav a,
+  .site-nav a .text-sm {
+    font-family: Nunito, "Trebuchet MS", sans-serif !important;
+    font-size: 0.78rem !important;
+    font-weight: 800;
+    letter-spacing: 0;
+  }
 }
 
 @keyframes tribal-wiggle {

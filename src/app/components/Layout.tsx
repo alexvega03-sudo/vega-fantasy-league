@@ -1,4 +1,5 @@
 import { Outlet, Link, useLocation, useParams, Navigate, useNavigate } from 'react-router';
+import { useEffect, useState, type ChangeEvent } from 'react';
 import { Trophy, BarChart3, BookOpen, Users, ChevronDown } from 'lucide-react';
 import { GameProvider, useGame } from '../context/GameContext';
 import { CURRENT_SEASON_ID, isSeasonId, seasons } from '../data/seasons';
@@ -7,40 +8,62 @@ import { NotFound } from '../pages/NotFound';
 import { ShieldMark } from './ShieldMark';
 
 const navItems = [
-  { path: '/', label: 'Leaderboard', icon: Trophy },
+  { path: '/', label: 'Leaderboard', shortLabel: 'Leaders', icon: Trophy },
   { path: '/weekly', label: 'Weekly', icon: BarChart3 },
   { path: '/tribes', label: 'Tribes', icon: Users },
   { path: '/rules', label: 'Rules', icon: BookOpen },
 ];
+
+function useMobileLayout() {
+  const [isMobile, setIsMobile] = useState(
+    () => typeof window !== 'undefined' && window.matchMedia('(max-width: 639px)').matches,
+  );
+
+  useEffect(() => {
+    const media = window.matchMedia('(max-width: 639px)');
+    const onChange = () => setIsMobile(media.matches);
+    onChange();
+    media.addEventListener('change', onChange);
+    return () => media.removeEventListener('change', onChange);
+  }, []);
+
+  return isMobile;
+}
 
 function SeasonSwitcher() {
   const { season } = useGame();
   const location = useLocation();
   const navigate = useNavigate();
   const pagePath = pagePathFromLocation(location.pathname);
+  const isMobile = useMobileLayout();
+
+  const onChange = (event: ChangeEvent<HTMLSelectElement>) => {
+    if (!isSeasonId(event.target.value)) return;
+    navigate(seasonPagePath(event.target.value, pagePath));
+  };
 
   return (
-    <div className="relative">
+    <div className="relative shrink-0">
       <label htmlFor="season-switcher" className="sr-only">
         Season
       </label>
       <select
         id="season-switcher"
         value={season.id}
-        onChange={(event) => {
-          if (!isSeasonId(event.target.value)) return;
-          navigate(seasonPagePath(event.target.value, pagePath));
-        }}
-        className="appearance-none pl-3 pr-9 py-2 bg-white border border-gray-200 rounded-lg text-sm font-medium text-gray-900 hover:border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+        onChange={onChange}
+        className={`appearance-none py-2 bg-white border border-gray-200 rounded-lg text-sm font-medium text-gray-900 hover:border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
+          isMobile ? 'w-[4.75rem] pl-2.5 pr-7' : 'pl-3 pr-9'
+        }`}
       >
         {seasons.map((item) => (
           <option key={item.id} value={item.id}>
-            {item.label}
-            {item.archived ? ' (archive)' : ''}
+            {isMobile
+              ? `S${item.id}`
+              : `${item.label}${item.archived ? ' (archive)' : ''}`}
           </option>
         ))}
       </select>
-      <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 size-4 text-gray-400 pointer-events-none" />
+      <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 size-4 text-gray-400 pointer-events-none sm:right-2.5" />
     </div>
   );
 }
@@ -57,18 +80,18 @@ function LayoutFrame() {
 
   return (
     <div className="site-shell min-h-screen bg-gray-50">
-      <header className="site-header bg-white border-b border-gray-200 sticky top-0 z-50">
+      <header className="site-header bg-white border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16 gap-4">
-            <div className="flex items-center gap-3 min-w-0">
+          <div className="site-header-row grid grid-cols-[minmax(0,1fr)_auto] items-center h-16 gap-2 sm:gap-4">
+            <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1 overflow-hidden">
               <div className="site-mark size-10 flex items-center justify-center shrink-0">
                 <ShieldMark />
               </div>
-              <div className="min-w-0">
+              <div className="min-w-0 overflow-hidden">
                 <h1 className="site-title font-bold text-gray-900 leading-tight truncate">
                   Vega Family Survivor
                 </h1>
-                <p className="text-sm font-medium text-gray-900">
+                <p className="text-sm font-medium text-gray-900 truncate">
                   {season.label}
                   {season.archived ? (
                     <span className="ml-2 text-xs font-semibold uppercase tracking-wide text-gray-500">
@@ -86,9 +109,9 @@ function LayoutFrame() {
         </div>
       </header>
 
-      <nav className="site-nav bg-white border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex space-x-8 overflow-x-auto">
+      <nav className="site-nav bg-white border-b border-gray-200 sticky top-0 z-[100]">
+        <div className="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8">
+          <div className="site-nav-row grid grid-cols-4 sm:flex sm:flex-nowrap sm:space-x-8 overflow-x-auto overflow-y-hidden overscroll-x-contain">
             {navItems.map((item) => {
               const Icon = item.icon;
               const active = isActive(item.path);
@@ -99,7 +122,8 @@ function LayoutFrame() {
                   to={seasonPagePath(season.id, item.path)}
                   aria-current={active ? 'page' : undefined}
                   className={`
-                    flex items-center gap-2 px-3 py-4 border-b-2 transition-colors whitespace-nowrap
+                    flex min-w-0 items-center justify-center gap-1 sm:gap-2
+                    px-0.5 sm:px-3 py-3 sm:py-4 border-b-2 transition-colors sm:whitespace-nowrap
                     ${
                       active
                         ? 'nav-link-active border-blue-500 text-blue-600'
@@ -107,8 +131,9 @@ function LayoutFrame() {
                     }
                   `}
                 >
-                  <Icon className="size-4" />
-                  <span className="text-sm font-medium">{item.label}</span>
+                  <Icon className="size-4 hidden sm:block shrink-0" />
+                  <span className="text-sm font-medium sm:hidden">{item.shortLabel ?? item.label}</span>
+                  <span className="text-sm font-medium hidden sm:inline">{item.label}</span>
                 </Link>
               );
             })}

@@ -545,13 +545,6 @@ export function Rules() {
         </div>
 
       </div>
-
-      {/* Footer */}
-      <div className="bg-blue-50 border border-blue-200 rounded-lg p-6 text-center">
-        <p className="text-blue-900 font-medium">
-          Good luck to all the Vega family players! May the best fantasy manager win! 🎉
-        </p>
-      </div>
     </div>
   );
 }
