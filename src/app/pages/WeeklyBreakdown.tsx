@@ -4,6 +4,8 @@ import { BarChart3, ChevronDown } from 'lucide-react';
 
 const tribeClass = (tribe: string) => {
   switch (tribe) {
+    case 'Toka': return 'bg-yellow-100 text-yellow-800';
+    case 'Savu': return 'bg-purple-100 text-purple-800';
     case 'Vatu': return 'bg-purple-100 text-purple-800';
     case 'Cila': return 'bg-orange-100 text-orange-800';
     case 'Kalo': return 'bg-teal-100 text-teal-800';

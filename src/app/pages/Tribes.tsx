@@ -45,7 +45,7 @@ export function Tribes() {
         </div>
         <div>
           <div className="text-xs text-gray-500 uppercase tracking-wide mb-1">Picks per player</div>
-          <div className="text-2xl font-bold text-gray-900">10</div>
+          <div className="text-2xl font-bold text-gray-900">{season.id === '51' ? 8 : 10}</div>
         </div>
         <div>
           <div className="text-xs text-gray-500 uppercase tracking-wide mb-1">Still active</div>
@@ -62,15 +62,7 @@ export function Tribes() {
       </div>
 
       {/* Tribe cards — one per family member */}
-      {contestants.length === 0 ? (
-        <div className="bg-gray-50 rounded-xl border border-gray-200 p-12 text-center text-gray-400">
-          <Users className="size-12 mx-auto mb-3 opacity-40" />
-          <p className="font-medium">Draft not in yet</p>
-          <p className="text-sm mt-1">
-            {season.label} fantasy tribes will appear here after everyone makes their picks.
-          </p>
-        </div>
-      ) : familyMembers.length === 0 ? (
+      {familyMembers.length === 0 ? (
         <div className="bg-gray-50 rounded-xl border border-gray-200 p-12 text-center text-gray-400">
           <Users className="size-12 mx-auto mb-3 opacity-40" />
           <p className="font-medium">No players found</p>
@@ -93,6 +85,7 @@ export function Tribes() {
               if (tribeA !== tribeB) return tribeA - tribeB;
               return a.name.localeCompare(b.name);
             });
+            const maxPicks = season.id === '51' ? 8 : 10;
             const totalPoints = getPlayerTotalPoints(member.id);
             const activeCount = memberCastaways.filter((c) => !c.isEliminated).length;
             const eliminatedCount = memberCastaways.filter((c) => c.isEliminated).length;
@@ -117,7 +110,9 @@ export function Tribes() {
                     <div>
                       <h3 className="text-lg font-bold text-gray-900">{member.name}</h3>
                       <p className="text-xs text-gray-500">
-                        {activeCount} active · {eliminatedCount} eliminated
+                        {memberCastaways.length === 0
+                          ? 'Picks coming soon'
+                          : `${activeCount} active · ${eliminatedCount} eliminated`}
                       </p>
                     </div>
                   </div>
@@ -225,10 +220,10 @@ export function Tribes() {
                 </div>
 
                 {/* Card footer — picks remaining */}
-                {picks.length < 10 && (
+                {picks.length < maxPicks && (
                   <div className="px-6 py-3 bg-yellow-50 border-t border-yellow-100">
                     <p className="text-xs text-yellow-700 font-medium">
-                      {10 - picks.length} pick{10 - picks.length !== 1 ? 's' : ''} remaining
+                      {maxPicks - picks.length} pick{maxPicks - picks.length !== 1 ? 's' : ''} remaining
                     </p>
                   </div>
                 )}

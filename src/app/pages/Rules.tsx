@@ -3,10 +3,30 @@ import { useGame } from '../context/GameContext';
 
 const TRIBE_STYLES: Record<
   string,
-  { header: string; border: string; badge: string; dot: string; nameBg: string }
+  { header: string; name: string; remaining: string; border: string; badge: string; dot: string; nameBg: string }
 > = {
+  Toka: {
+    header: 'bg-yellow-400',
+    name: 'text-gray-900',
+    remaining: 'text-gray-700',
+    border: 'border-yellow-300',
+    badge: 'bg-yellow-100 text-yellow-800',
+    dot: 'bg-yellow-500',
+    nameBg: 'bg-yellow-50',
+  },
+  Savu: {
+    header: 'bg-purple-600',
+    name: 'text-white',
+    remaining: 'text-white/70',
+    border: 'border-purple-300',
+    badge: 'bg-purple-100 text-purple-800',
+    dot: 'bg-purple-500',
+    nameBg: 'bg-purple-50',
+  },
   Vatu: {
     header: 'bg-purple-600',
+    name: 'text-white',
+    remaining: 'text-white/70',
     border: 'border-purple-300',
     badge: 'bg-purple-100 text-purple-800',
     dot: 'bg-purple-500',
@@ -14,6 +34,8 @@ const TRIBE_STYLES: Record<
   },
   Cila: {
     header: 'bg-orange-500',
+    name: 'text-white',
+    remaining: 'text-white/70',
     border: 'border-orange-300',
     badge: 'bg-orange-100 text-orange-800',
     dot: 'bg-orange-400',
@@ -21,6 +43,8 @@ const TRIBE_STYLES: Record<
   },
   Kalo: {
     header: 'bg-teal-600',
+    name: 'text-white',
+    remaining: 'text-white/70',
     border: 'border-teal-300',
     badge: 'bg-teal-100 text-teal-800',
     dot: 'bg-teal-500',
@@ -30,11 +54,109 @@ const TRIBE_STYLES: Record<
 
 const FALLBACK_TRIBE_STYLES = {
   header: 'bg-blue-600',
+  name: 'text-white',
+  remaining: 'text-white/70',
   border: 'border-blue-300',
   badge: 'bg-blue-100 text-blue-800',
   dot: 'bg-blue-500',
   nameBg: 'bg-blue-50',
 };
+
+const TRIBE_ORDER = ['Toka', 'Savu', 'Cila', 'Kalo', 'Vatu'];
+
+const SCORE_FIVE_S50 = [
+  'Wins a group Immunity Challenge',
+  'Wins a group Reward Challenge',
+  'Gets chosen to go on reward',
+  'Finds or gets a game advantage',
+  'Plays a hidden immunity idol on themselves at Tribal Council',
+  'Uses a game advantage at Tribal Council',
+  'Visually cries with tears on camera',
+  'Says a curse word that is bleeped/censored',
+  'Says, "I miss…"',
+  'Kisses another player still in the game',
+  'Gets into a heated argument and shouts at another player',
+  'Has a wardrobe malfunction / shows nudity that is blurred on screen',
+  'Chooses to risk their vote',
+  'Finds a fake immunity idol',
+  'Hugs Jeff',
+  'Is chosen to go on a journey',
+];
+
+const SCORE_FIVE_S51 = [
+  'Wins a group Immunity Challenge',
+  'Wins a group Reward Challenge',
+  'Gets chosen to go on reward',
+  'Finds or gets a game advantage',
+  'Plays a hidden immunity idol on themselves at Tribal Council',
+  'Uses a game advantage at Tribal Council',
+  'Visually cries with tears on camera',
+  'Says a curse word that is bleeped/censored',
+  'Says, "I miss…"',
+  'Kisses another player still in the game',
+  'Gets into a heated argument and shouts at another player',
+  'Has a wardrobe malfunction / shows nudity that is blurred on screen',
+  'Chooses to risk their vote',
+  'Finds a fake immunity idol',
+  'Hugs Jeff',
+  'Buys something with fire tokens',
+];
+
+const SCORE_TEN_S50 = [
+  'Wins an individual Reward Challenge',
+  'Finds a hidden immunity idol',
+  'Voted out while in possession of a hidden immunity idol or game advantage',
+  "Plays their 'Shot in the Dark'",
+  'Torch gets snuffed as a result of a blindside',
+  'Gets treated for a medical emergency',
+  'Chooses to forfeit the game',
+  'Catches seafood or wildlife',
+  "Tampers with or steals the tribe's food",
+  'Plays a fake immunity idol at Tribal Council',
+  "Searches through someone else's bag",
+  'Voted out unanimously',
+  'A hidden immunity idol is played on them by another player',
+];
+
+const SCORE_TEN_S51 = [
+  'Wins an individual Reward Challenge',
+  'Finds a hidden immunity idol',
+  'Voted out while in possession of a hidden immunity idol or game advantage',
+  "Plays their 'Shot in the Dark'",
+  'Torch gets snuffed as a result of a blindside',
+  'Gets treated for a medical emergency',
+  'Chooses to forfeit the game',
+  'Catches seafood or wildlife',
+  "Tampers with or steals the tribe's food",
+  'Plays a fake immunity idol at Tribal Council',
+  "Searches through someone else's bag",
+  'Voted out unanimously',
+  'A hidden immunity idol is played on them by another player',
+  'Is chosen to flip the "million-dollar coin"',
+  'Is chosen to go on a journey or sent to Exile Island',
+];
+
+const SCORE_FIFTEEN_S50 = [
+  'Wins an individual Immunity Challenge',
+  "Draws a SAFE scroll as a result of playing their 'Shot in the Dark'",
+  'Wins a fire-making challenge',
+  'Gives an immunity idol/necklace away or plays it for another player',
+  'Creates a fake immunity idol',
+  'Successfully gets another player to play their fake idol at Tribal Council',
+  'Is forced to leave the game by no choice of their own (aside from being voted off)',
+];
+
+const SCORE_FIFTEEN_S51 = [
+  'Wins an individual Immunity Challenge',
+  "Draws a SAFE scroll as a result of playing their 'Shot in the Dark'",
+  'Wins a fire-making challenge',
+  'Gives an immunity idol/necklace away or plays it for another player',
+  'Creates a fake immunity idol',
+  'Successfully gets another player to play their fake idol at Tribal Council',
+  'Is forced to leave the game by no choice of their own (aside from being voted off)',
+  'Returns to the game after being voted off/eliminated',
+  'Successfully flips the "million-dollar" coin and isn\'t eliminated',
+];
 
 // ─── Reusable score row ───────────────────────────────────────────────────────
 function ScoreRow({ points, label }: { points: number; label: string }) {
@@ -94,6 +216,7 @@ function ScoreCategory({
 // ─── Page ─────────────────────────────────────────────────────────────────────
 export function Rules() {
   const { contestants, season } = useGame();
+  const isSeason51 = season.id === '51';
 
   const tribes = Array.from(
     contestants.reduce((map, contestant) => {
@@ -102,11 +225,17 @@ export function Rules() {
       map.set(contestant.tribe, members);
       return map;
     }, new Map<string, typeof contestants>())
-  ).map(([name, members]) => ({
-    name,
-    members: [...members].sort((a, b) => a.name.localeCompare(b.name)),
-    styles: TRIBE_STYLES[name] ?? FALLBACK_TRIBE_STYLES,
-  }));
+  )
+    .map(([name, members]) => ({
+      name,
+      members: [...members].sort((a, b) => a.name.localeCompare(b.name)),
+      styles: TRIBE_STYLES[name] ?? FALLBACK_TRIBE_STYLES,
+    }))
+    .sort((a, b) => {
+      const orderA = TRIBE_ORDER.indexOf(a.name);
+      const orderB = TRIBE_ORDER.indexOf(b.name);
+      return (orderA === -1 ? 99 : orderA) - (orderB === -1 ? 99 : orderB);
+    });
 
   return (
     <div className="space-y-6">
@@ -132,34 +261,54 @@ export function Rules() {
             <div className="flex items-start gap-3">
               <span className="mt-1 size-6 rounded-full bg-blue-600 text-white text-xs font-bold flex items-center justify-center shrink-0">1</span>
               <p className="text-gray-700 leading-relaxed">
-                After episode 1 airs, each person picks <strong>three (3) castaways from each tribe</strong> that
-                you think will make it to the end of the game to be in your own <em>'Fantasy Tribe'</em>. You
-                should have <strong>nine (9) picks in total</strong> (3 picks/tribe × 3).
+                {isSeason51 ? (
+                  <>
+                    After episode 1 airs, each person picks <strong>four (4) castaways from each tribe</strong> that
+                    you think will make it to the end of the game to be in your own <em>'Fantasy Tribe'</em>. You
+                    should have <strong>eight (8) picks in total</strong> (4 picks/tribe × 2).
+                  </>
+                ) : (
+                  <>
+                    After episode 1 airs, each person picks <strong>three (3) castaways from each tribe</strong> that
+                    you think will make it to the end of the game to be in your own <em>'Fantasy Tribe'</em>. You
+                    should have <strong>nine (9) picks in total</strong> (3 picks/tribe × 3).
+                  </>
+                )}
               </p>
             </div>
 
             <div className="flex items-start gap-3">
               <span className="mt-1 size-6 rounded-full bg-blue-600 text-white text-xs font-bold flex items-center justify-center shrink-0">2</span>
               <p className="text-gray-700 leading-relaxed">
-                Out of your nine picks, choose <strong>ONE</strong> of them to be your <strong>MVP</strong> — the
-                castaway you think will be the Sole Survivor and win the game. You'll get extra bonus
-                points at the end of the season if you guessed right!
+                Out of your {isSeason51 ? 'eight' : 'nine'} picks, choose <strong>ONE</strong> of them to be your{' '}
+                <strong>MVP</strong> — the castaway you think will be the Sole Survivor and win the game. You'll
+                get extra bonus points at the end of the season if you guessed right!
               </p>
             </div>
 
             <div className="flex items-start gap-3">
               <span className="mt-1 size-6 rounded-full bg-blue-600 text-white text-xs font-bold flex items-center justify-center shrink-0">3</span>
               <p className="text-gray-700 leading-relaxed">
-                Bookmark this site and check back <strong>every Friday</strong> throughout the season to see how
-                many points your picks racked up for the week. Points begin to accumulate starting
-                with <strong>episode 2</strong>.
+                {isSeason51 ? (
+                  <>
+                    Bookmark this site and check back <strong>every Friday evening after 6pm</strong> throughout
+                    the season to see how many points your picks racked up for the week. Points begin to
+                    accumulate starting with <strong>episode 2</strong> (Wednesday, September 30).
+                  </>
+                ) : (
+                  <>
+                    Bookmark this site and check back <strong>every Friday</strong> throughout the season to see how
+                    many points your picks racked up for the week. Points begin to accumulate starting
+                    with <strong>episode 2</strong>.
+                  </>
+                )}
               </p>
             </div>
 
             {!season.archived && (
               <div className="pt-1">
                 <a
-                  href="https://www.globaltv.com/shows/survivor/cast/"
+                  href="https://www.globaltv.com/survivor-51-fantasy-tribe/"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center justify-center gap-2 px-4 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium text-center"
@@ -181,16 +330,16 @@ export function Rules() {
                 </div>
               ) : (
                 <>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className={`grid grid-cols-1 ${tribes.length === 2 ? 'md:grid-cols-2' : 'md:grid-cols-3'} gap-4`}>
                 {tribes.map((tribe) => (
                   <div
                     key={tribe.name}
                     className={`rounded-xl border-2 ${tribe.styles.border} overflow-hidden`}
                   >
                     <div className={`${tribe.styles.header} px-4 py-3 flex items-center gap-2`}>
-                      <div className="size-3 rounded-full bg-white/40" />
-                      <span className="text-white font-bold text-base">{tribe.name}</span>
-                      <span className="ml-auto text-white/70 text-xs font-medium">
+                      <div className={`size-3 rounded-full ${tribe.styles.name === 'text-gray-900' ? 'bg-gray-900/30' : 'bg-white/40'}`} />
+                      <span className={`${tribe.styles.name} font-bold text-base`}>{tribe.name}</span>
+                      <span className={`ml-auto ${tribe.styles.remaining} text-xs font-medium`}>
                         {tribe.members.filter((member) => !member.isEliminated).length} remaining
                       </span>
                     </div>
@@ -247,10 +396,23 @@ export function Rules() {
                 <span className="font-bold text-amber-900 text-base">MERGE BONUS!</span>
               </div>
               <p className="text-amber-800 text-sm leading-relaxed">
-                After the tribes merge, you can pick <strong>ONE extra castaway</strong> to add to your
-                'Fantasy Tribe'. If you lost some players before the merge, this is your chance to
-                bolster your team. Points for this extra pick are <strong>not retroactive</strong> and will
-                begin to accumulate on the episode following the merge.
+                {isSeason51 ? (
+                  <>
+                    After the tribes merge, you can pick <strong>ONE extra castaway</strong> if you lost players
+                    before the merge. You cannot have more than <strong>eight castaways</strong> in your Fantasy
+                    Tribe at any time. If you still have all eight, you may <strong>swap</strong> one weaker pick
+                    for a stronger player. Extra picks and swaps are <strong>not retroactive</strong> — they take
+                    effect on the episode following the merge, and you keep points already earned from a
+                    swapped-out player.
+                  </>
+                ) : (
+                  <>
+                    After the tribes merge, you can pick <strong>ONE extra castaway</strong> to add to your
+                    'Fantasy Tribe'. If you lost some players before the merge, this is your chance to
+                    bolster your team. Points for this extra pick are <strong>not retroactive</strong> and will
+                    begin to accumulate on the episode following the merge.
+                  </>
+                )}
               </p>
             </div>
 
@@ -309,56 +471,17 @@ export function Rules() {
                 <ScoreCategory
                   pts={5}
                   color="green"
-                  items={[
-                    'Wins a group Immunity Challenge',
-                    'Wins a group Reward Challenge',
-                    'Gets chosen to go on reward',
-                    'Finds or gets a game advantage',
-                    'Plays a hidden immunity idol on themselves at Tribal Council',
-                    'Uses a game advantage at Tribal Council',
-                    'Visually cries with tears on camera',
-                    'Says a curse word that is bleeped/censored',
-                    'Says, "I miss…"',
-                    'Kisses another player still in the game',
-                    'Gets into a heated argument and shouts at another player',
-                    'Has a wardrobe malfunction / shows nudity that is blurred on screen',
-                    'Chooses to risk their vote',
-                    'Finds a fake immunity idol',
-                    'Hugs Jeff',
-                    'Is chosen to go on a journey',
-                  ]}
+                  items={isSeason51 ? SCORE_FIVE_S51 : SCORE_FIVE_S50}
                 />
                 <ScoreCategory
                   pts={10}
                   color="blue"
-                  items={[
-                    'Wins an individual Reward Challenge',
-                    'Finds a hidden immunity idol',
-                    'Voted out while in possession of a hidden immunity idol or game advantage',
-                    "Plays their 'Shot in the Dark'",
-                    'Torch gets snuffed as a result of a blindside',
-                    'Gets treated for a medical emergency',
-                    'Chooses to forfeit the game',
-                    'Catches seafood or wildlife',
-                    "Tampers with or steals the tribe's food",
-                    'Plays a fake immunity idol at Tribal Council',
-                    "Searches through someone else's bag",
-                    'Voted out unanimously',
-                    'A hidden immunity idol is played on them by another player',
-                  ]}
+                  items={isSeason51 ? SCORE_TEN_S51 : SCORE_TEN_S50}
                 />
                 <ScoreCategory
                   pts={15}
                   color="purple"
-                  items={[
-                    'Wins an individual Immunity Challenge',
-                    "Draws a SAFE scroll as a result of playing their 'Shot in the Dark'",
-                    'Wins a fire-making challenge',
-                    'Gives an immunity idol/necklace away or plays it for another player',
-                    'Creates a fake immunity idol',
-                    'Successfully gets another player to play their fake idol at Tribal Council',
-                    'Is forced to leave the game by no choice of their own (aside from being voted off)',
-                  ]}
+                  items={isSeason51 ? SCORE_FIFTEEN_S51 : SCORE_FIFTEEN_S50}
                 />
               </div>
             </div>
@@ -374,8 +497,11 @@ export function Rules() {
           <div className="p-6 space-y-2">
             {[
               'Points are tallied after each episode airs',
-              'The leaderboard updates every Friday with new weekly scores',
+              isSeason51
+                ? 'The leaderboard updates every Friday evening after 6pm with new weekly scores'
+                : 'The leaderboard updates every Friday with new weekly scores',
               'Check the Weekly Breakdown page to see detailed scoring per episode',
+              ...(isSeason51 ? ['Points begin to accumulate starting with episode 2'] : []),
             ].map((item) => (
               <div key={item} className="flex items-start gap-2 text-gray-700">
                 <span className="text-orange-500 font-bold mt-0.5">•</span>
@@ -391,11 +517,30 @@ export function Rules() {
             <Award className="size-6 text-yellow-600" />
             <h3 className="text-lg font-semibold text-gray-900">Winning the League</h3>
           </div>
-          <div className="p-6">
+          <div className="p-6 space-y-4">
             <p className="text-gray-700 leading-relaxed">
-              The family member with the highest total points at the end of the Survivor season is
+              The person with the highest total points at the end of the Survivor season is
               crowned the Fantasy League Champion!
             </p>
+            {isSeason51 && (
+              <div className="rounded-xl border border-gray-200 bg-gray-50 px-5 py-4 space-y-2">
+                <p className="text-gray-700 leading-relaxed">
+                  Nine people are playing Season 51. Buy-in is <strong>$25</strong> — the winner takes{' '}
+                  <strong>$225</strong>.
+                </p>
+                <p className="text-gray-700 leading-relaxed">
+                  Venmo{' '}
+                  <a
+                    href="https://venmo.com/u/alexxxvegaaa"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="font-semibold text-blue-600"
+                  >
+                    @alexxxvegaaa
+                  </a>
+                </p>
+              </div>
+            )}
           </div>
         </div>
 
