@@ -67,7 +67,7 @@ export const contestants: {
 }[] = [
   { id: 's51-toka-an', name: 'An "Thien An"', tribe: 'Toka', isEliminated: false },
   { id: 's51-toka-brady', name: 'Brady', tribe: 'Toka', isEliminated: false },
-  { id: 's51-toka-danny', name: 'Danny', tribe: 'Toka', isEliminated: false },
+  { id: 's51-toka-kilby', name: 'Kilby', tribe: 'Toka', isEliminated: false },
   { id: 's51-toka-devin', name: 'Devin', tribe: 'Toka', isEliminated: false },
   { id: 's51-toka-jelly', name: 'Jelly', tribe: 'Toka', isEliminated: false },
   { id: 's51-toka-jenna', name: 'Jenna', tribe: 'Toka', isEliminated: false },
