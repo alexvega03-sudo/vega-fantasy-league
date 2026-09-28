@@ -1,4 +1,5 @@
 import { useGame } from '../context/GameContext';
+import { TRIBE_SORT_ORDER, tribeBadgeClass } from '../lib/tribeStyles';
 import { Users, Flame, Skull, Star } from 'lucide-react';
 
 export function Tribes() {
@@ -72,7 +73,6 @@ export function Tribes() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {familyMembers.map((member) => {
             const picks = draftPicks[member.id] || [];
-            const TRIBE_ORDER: Record<string, number> = { Cila: 0, Kalo: 1, Vatu: 2 };
             const memberCastaways = picks
               .map((pick) => {
                 const contestant = contestants.find((c) => c.id === pick.contestantId);
@@ -80,8 +80,8 @@ export function Tribes() {
               })
               .filter(Boolean) as (typeof contestants[0] & { pickWeek: number })[];
             memberCastaways.sort((a, b) => {
-              const tribeA = TRIBE_ORDER[a.tribe] ?? 99;
-              const tribeB = TRIBE_ORDER[b.tribe] ?? 99;
+              const tribeA = TRIBE_SORT_ORDER[a.tribe] ?? 99;
+              const tribeB = TRIBE_SORT_ORDER[b.tribe] ?? 99;
               if (tribeA !== tribeB) return tribeA - tribeB;
               return a.name.localeCompare(b.name);
             });
@@ -179,17 +179,7 @@ export function Tribes() {
 
                               <div className="flex items-center gap-2 mt-0.5">
                                 <span
-                                  className={`inline-flex items-center px-1.5 py-0.5 rounded text-xs font-medium ${
-                                    castaway.tribe === 'Vatu'
-                                      ? 'bg-purple-100 text-purple-700'
-                                      : castaway.tribe === 'Cila'
-                                      ? 'bg-orange-100 text-orange-700'
-                                      : castaway.tribe === 'Kalo'
-                                      ? 'bg-teal-100 text-teal-700'
-                                      : castaway.tribe === 'Blue'
-                                      ? 'bg-blue-100 text-blue-700'
-                                      : 'bg-red-100 text-red-700'
-                                  }`}
+                                  className={`inline-flex items-center px-1.5 py-0.5 rounded text-xs font-medium ${tribeBadgeClass(castaway.tribe)}`}
                                 >
                                   {castaway.tribe}
                                 </span>

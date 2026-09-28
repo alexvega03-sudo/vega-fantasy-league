@@ -1,18 +1,7 @@
 import { useState } from 'react';
 import { useGame } from '../context/GameContext';
+import { tribeBadgeClass } from '../lib/tribeStyles';
 import { BarChart3, ChevronDown } from 'lucide-react';
-
-const tribeClass = (tribe: string) => {
-  switch (tribe) {
-    case 'Toka': return 'bg-yellow-100 text-yellow-800';
-    case 'Savu': return 'bg-purple-100 text-purple-800';
-    case 'Vatu': return 'bg-purple-100 text-purple-800';
-    case 'Cila': return 'bg-orange-100 text-orange-800';
-    case 'Kalo': return 'bg-teal-100 text-teal-800';
-    case 'Blue': return 'bg-blue-100 text-blue-800';
-    default:     return 'bg-red-100 text-red-800';
-  }
-};
 
 export function WeeklyBreakdown() {
   const { getWeeklyBreakdown, contestants, currentWeek, hasStarted, season } = useGame();
@@ -162,7 +151,7 @@ export function WeeklyBreakdown() {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <span
-                        className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${tribeClass(castaway.tribe)}`}
+                        className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${tribeBadgeClass(castaway.tribe)}`}
                       >
                         {castaway.tribe}
                       </span>

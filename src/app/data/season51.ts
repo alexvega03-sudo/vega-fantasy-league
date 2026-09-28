@@ -7,13 +7,13 @@ export const familyMembers = [
     id: '11111111-0000-0000-0000-000000000001',
     name: 'Virginia',
     color: '#6C5CE7',
-    mvpContestantId: null,
+    mvpContestantId: 's51-savu-ori',
   },
   {
     id: '11111111-0000-0000-0000-000000000002',
     name: 'Ruben',
     color: '#067056',
-    mvpContestantId: null,
+    mvpContestantId: 's51-toka-jelly',
   },
   {
     id: '11111111-0000-0000-0000-000000000004',
@@ -37,7 +37,7 @@ export const familyMembers = [
     id: '19cce77b-8f0d-461b-b4dc-e30bb2f8bbc1',
     name: 'Alex',
     color: '#FF6B6B',
-    mvpContestantId: null,
+    mvpContestantId: 's51-toka-mike',
   },
   {
     id: '86e5772c-2a66-4d35-ba7b-bc869559ea5c',
@@ -93,6 +93,47 @@ export const weeklyScores: {
   points: number;
 }[] = [];
 
-export const draftPicks: Record<string, { contestantId: string; pickWeek: number }[]> = {};
+export const draftPicks: Record<string, { contestantId: string; pickWeek: number }[]> = {
+  '11111111-0000-0000-0000-000000000001': [
+    { contestantId: 's51-savu-carter', pickWeek: 1 },
+    { contestantId: 's51-savu-kristin', pickWeek: 1 },
+    { contestantId: 's51-savu-ori', pickWeek: 1 },
+    { contestantId: 's51-savu-sharonda', pickWeek: 1 },
+    { contestantId: 's51-toka-mike', pickWeek: 1 },
+    { contestantId: 's51-toka-jenna', pickWeek: 1 },
+    { contestantId: 's51-toka-patt', pickWeek: 1 },
+    { contestantId: 's51-toka-brady', pickWeek: 1 },
+  ],
+  '11111111-0000-0000-0000-000000000002': [
+    { contestantId: 's51-savu-cristian', pickWeek: 1 },
+    { contestantId: 's51-savu-kristin', pickWeek: 1 },
+    { contestantId: 's51-savu-sharonda', pickWeek: 1 },
+    { contestantId: 's51-savu-ana', pickWeek: 1 },
+    { contestantId: 's51-toka-jelly', pickWeek: 1 },
+    { contestantId: 's51-toka-lewis', pickWeek: 1 },
+    { contestantId: 's51-toka-mike', pickWeek: 1 },
+    { contestantId: 's51-toka-patt', pickWeek: 1 },
+  ],
+  '11111111-0000-0000-0000-000000000005': [
+    { contestantId: 's51-toka-maggie', pickWeek: 1 },
+    { contestantId: 's51-toka-jelly', pickWeek: 1 },
+    { contestantId: 's51-toka-an', pickWeek: 1 },
+    { contestantId: 's51-toka-lewis', pickWeek: 1 },
+    { contestantId: 's51-savu-alexis', pickWeek: 1 },
+    { contestantId: 's51-savu-cristian', pickWeek: 1 },
+    { contestantId: 's51-savu-ana', pickWeek: 1 },
+    { contestantId: 's51-savu-linnea', pickWeek: 1 },
+  ],
+  '19cce77b-8f0d-461b-b4dc-e30bb2f8bbc1': [
+    { contestantId: 's51-savu-kristin', pickWeek: 1 },
+    { contestantId: 's51-savu-ori', pickWeek: 1 },
+    { contestantId: 's51-savu-carter', pickWeek: 1 },
+    { contestantId: 's51-savu-sharonda', pickWeek: 1 },
+    { contestantId: 's51-toka-jelly', pickWeek: 1 },
+    { contestantId: 's51-toka-mike', pickWeek: 1 },
+    { contestantId: 's51-toka-patt', pickWeek: 1 },
+    { contestantId: 's51-toka-kilby', pickWeek: 1 },
+  ],
+};
 
 export const currentWeek = 0;
