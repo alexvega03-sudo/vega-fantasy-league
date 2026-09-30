@@ -70,7 +70,7 @@ export function Tribes() {
           <p className="text-sm mt-1">Add players in the league data file first.</p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {familyMembers.map((member) => {
             const picks = draftPicks[member.id] || [];
             const memberCastaways = picks
@@ -97,24 +97,16 @@ export function Tribes() {
               >
                 {/* Card header */}
                 <div
-                  className="px-6 py-4 flex items-center justify-between"
+                  className="px-4 py-3 flex items-center justify-between gap-2"
                   style={{ backgroundColor: member.color + '18', borderBottom: `3px solid ${member.color}` }}
                 >
-                  <div className="flex items-center gap-3">
-                    <div
-                      className="size-10 rounded-full flex items-center justify-center text-white font-bold text-lg shadow"
-                      style={{ backgroundColor: member.color }}
-                    >
-                      {member.name.charAt(0)}
-                    </div>
-                    <div>
-                      <h3 className="text-lg font-bold text-gray-900">{member.name}</h3>
-                      <p className="text-xs text-gray-500">
-                        {memberCastaways.length === 0
-                          ? 'Picks coming soon'
-                          : `${activeCount} active · ${eliminatedCount} eliminated`}
-                      </p>
-                    </div>
+                  <div className="min-w-0">
+                    <h3 className="text-lg font-bold text-gray-900 truncate">{member.name}</h3>
+                    <p className="text-xs text-gray-500">
+                      {memberCastaways.length === 0
+                        ? 'Picks coming soon'
+                        : `${activeCount} active · ${eliminatedCount} eliminated`}
+                    </p>
                   </div>
                   <div className="text-right">
                     <div className="text-2xl font-bold" style={{ color: member.color }}>
@@ -127,7 +119,7 @@ export function Tribes() {
                 {/* Castaway list */}
                 <div className="divide-y divide-gray-100">
                   {memberCastaways.length === 0 ? (
-                    <div className="px-6 py-8 text-center text-gray-400 text-sm">
+                    <div className="px-4 py-8 text-center text-gray-400 text-sm">
                       No picks assigned yet
                     </div>
                   ) : (
@@ -141,7 +133,7 @@ export function Tribes() {
                       return (
                         <div
                           key={castaway.id}
-                          className={`px-6 py-3 flex items-center justify-between transition-colors ${
+                          className={`px-4 py-2.5 flex items-center justify-between gap-2 transition-colors ${
                             castaway.isEliminated ? 'opacity-50 bg-gray-50' : ''
                           }`}
                         >
@@ -211,7 +203,7 @@ export function Tribes() {
 
                 {/* Card footer — picks remaining */}
                 {picks.length < maxPicks && (
-                  <div className="px-6 py-3 bg-yellow-50 border-t border-yellow-100">
+                  <div className="px-4 py-3 bg-yellow-50 border-t border-yellow-100">
                     <p className="text-xs text-yellow-700 font-medium">
                       {maxPicks - picks.length} pick{maxPicks - picks.length !== 1 ? 's' : ''} remaining
                     </p>
