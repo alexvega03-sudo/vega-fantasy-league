@@ -1,8 +1,9 @@
 import { useGame } from '../context/GameContext';
-import { Trophy, Medal, Award, TrendingUp } from 'lucide-react';
+import { LeaderDelight } from '../components/LeaderDelight';
+import { Trophy, TrendingUp } from 'lucide-react';
 
 export function Leaderboard() {
-  const { getLeaderboard, hasStarted, season } = useGame();
+  const { getLeaderboard, hasStarted, season, currentWeek } = useGame();
   const leaderboard = getLeaderboard();
   const leader = leaderboard[0];
   const leaderColor = leader?.familyMember.color ?? '#3b82f6';
@@ -30,23 +31,27 @@ export function Leaderboard() {
       ) : (
         <>
           <div
-            className="rounded-xl p-6 text-white shadow-lg"
+            className="leader-banner relative rounded-xl p-6 text-white shadow-lg"
             style={{ background: leaderColor }}
           >
-            <div className="flex items-center justify-between">
-              <div>
+            <div className="flex items-center justify-between gap-4">
+              <div className="min-w-0">
                 <div className="flex items-center gap-2 mb-2">
-                  <Trophy className="size-6" />
+                  <Trophy className="size-6 shrink-0" />
                   <span className="text-sm font-medium opacity-90">
                     {season.archived ? 'Season Winner' : 'Current Leader'}
                   </span>
                 </div>
-                <h3 className="text-4xl font-bold">{leader.familyMember.name}</h3>
+                <h3 className="text-4xl font-bold truncate">{leader.familyMember.name}</h3>
                 <p className="text-2xl font-semibold mt-2">{leader.totalPoints} points</p>
               </div>
-              <div className="size-20 bg-white/20 rounded-full flex items-center justify-center">
-                <Trophy className="size-12" />
-              </div>
+              {season.archived ? (
+                <div className="size-20 bg-white/20 rounded-full flex items-center justify-center shrink-0">
+                  <Trophy className="size-12" />
+                </div>
+              ) : (
+                <LeaderDelight week={currentWeek} />
+              )}
             </div>
           </div>
 
@@ -58,11 +63,6 @@ export function Leaderboard() {
             <div className="divide-y divide-gray-200">
               {leaderboard.map((entry, index) => {
                 const isLeader = index === 0;
-                const rankIcons = [
-                  <Trophy className="size-6 text-yellow-500" key="1st" />,
-                  <Medal className="size-6 text-gray-400" key="2nd" />,
-                  <Award className="size-6 text-orange-600" key="3rd" />,
-                ];
 
                 return (
                   <div
@@ -73,11 +73,7 @@ export function Leaderboard() {
                   >
                     <div className="flex items-center gap-4 flex-1">
                       <div className="w-12 flex items-center justify-center">
-                        {index < 3 ? (
-                          rankIcons[index]
-                        ) : (
-                          <span className="text-2xl font-bold text-gray-400">{index + 1}</span>
-                        )}
+                        <span className="text-2xl font-bold text-gray-400">{index + 1}</span>
                       </div>
 
                       <div
