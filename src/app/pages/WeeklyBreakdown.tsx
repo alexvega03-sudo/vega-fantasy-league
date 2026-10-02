@@ -1,17 +1,24 @@
 import { useState } from 'react';
 import { useGame } from '../context/GameContext';
 import { tribeBadgeClass } from '../lib/tribeStyles';
-import { BarChart3, ChevronDown } from 'lucide-react';
+import { BarChart3, ChevronDown, ExternalLink } from 'lucide-react';
+
+const EPISODE_BREAKDOWNS: Record<string, Record<number, string>> = {
+  '51': {
+    2: 'https://assets.globaltv.com/wp-content/uploads/2026/09/survivor-51-episode-2-points.jpg',
+  },
+};
 
 export function WeeklyBreakdown() {
-  const { getWeeklyBreakdown, contestants, currentWeek, hasStarted, season } = useGame();
-  const [selectedWeek, setSelectedWeek] = useState(currentWeek || 1);
+  const { getWeeklyBreakdown, contestants, currentWeek, hasStarted, season, weeklyScores } = useGame();
+  const weekOptions = [...new Set(weeklyScores.map((score) => score.weekNumber))].sort(
+    (a, b) => a - b
+  );
+  const [selectedWeek, setSelectedWeek] = useState(currentWeek || weekOptions[0] || 1);
 
   const weeklyData = getWeeklyBreakdown(selectedWeek);
   const weekScores = weeklyData.map((d) => d.weekTotal);
   const maxScore = Math.max(...weekScores, 0);
-
-  const weekOptions = Array.from({ length: Math.max(currentWeek, 1) }, (_, i) => i + 1);
 
   if (!hasStarted) {
     return (
@@ -62,8 +69,19 @@ export function WeeklyBreakdown() {
 
       {/* Family Member Scores */}
       <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-        <div className="px-6 py-4 border-b border-gray-200 bg-gray-50">
+        <div className="px-6 py-4 border-b border-gray-200 bg-gray-50 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
           <h3 className="text-lg font-semibold text-gray-900">Week {selectedWeek} Scores</h3>
+          {EPISODE_BREAKDOWNS[season.id]?.[selectedWeek] ? (
+            <a
+              href={EPISODE_BREAKDOWNS[season.id][selectedWeek]}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 text-sm font-medium text-blue-600"
+            >
+              Points breakdown
+              <ExternalLink className="size-3.5 shrink-0" />
+            </a>
+          ) : null}
         </div>
 
         <div className="p-6 space-y-6">
@@ -140,9 +158,11 @@ export function WeeklyBreakdown() {
             </thead>
             <tbody className="divide-y divide-gray-200">
               {contestants.map((castaway) => {
-                const score = weeklyData
-                  .flatMap((d) => d.contestantScores)
-                  .find((cs) => cs.contestant?.id === castaway.id);
+                const points =
+                  weeklyScores.find(
+                    (score) =>
+                      score.weekNumber === selectedWeek && score.contestantId === castaway.id
+                  )?.points ?? 0;
 
                 return (
                   <tr key={castaway.id}>
@@ -157,9 +177,7 @@ export function WeeklyBreakdown() {
                       </span>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <span className="text-lg font-semibold text-gray-900">
-                        {score?.points || 0}
-                      </span>
+                      <span className="text-lg font-semibold text-gray-900">{points}</span>
                     </td>
                   </tr>
                 );

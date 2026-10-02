@@ -364,6 +364,17 @@ select {
   }
 }
 
+.leader-delight-frame {
+  border: 3px solid var(--stroke);
+  border-radius: 1.3rem 0.45rem 1.4rem 0.6rem / 0.65rem 1.3rem 0.5rem 1.2rem;
+  box-shadow: 3px 3px 0 var(--stroke);
+  background: var(--cream);
+}
+
+.tribal-idol-wiggle {
+  animation: tribal-wiggle 3.6s ease-in-out infinite;
+}
+
 @keyframes tribal-wiggle {
   0%,
   100% {
@@ -378,7 +389,8 @@ select {
   .site-mark,
   main .rounded-xl,
   main .rounded-2xl,
-  .bg-blue-600 {
+  .bg-blue-600,
+  .tribal-idol-wiggle {
     animation: none;
     transition: none;
   }
