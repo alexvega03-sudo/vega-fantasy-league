@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useGame } from '../context/GameContext';
 import { tribeBadgeClass } from '../lib/tribeStyles';
 import { BarChart3, ChevronDown, ExternalLink } from 'lucide-react';
@@ -6,6 +6,7 @@ import { BarChart3, ChevronDown, ExternalLink } from 'lucide-react';
 const EPISODE_BREAKDOWNS: Record<string, Record<number, string>> = {
   '51': {
     2: 'https://assets.globaltv.com/wp-content/uploads/2026/09/survivor-51-episode-2-points.jpg',
+    3: 'https://assets.globaltv.com/wp-content/uploads/2026/10/08124654/survivor-51-episode-3-points.jpg',
   },
 };
 
@@ -15,6 +16,10 @@ export function WeeklyBreakdown() {
     (a, b) => a - b
   );
   const [selectedWeek, setSelectedWeek] = useState(currentWeek || weekOptions[0] || 1);
+
+  useEffect(() => {
+    if (currentWeek) setSelectedWeek(currentWeek);
+  }, [currentWeek]);
 
   const weeklyData = getWeeklyBreakdown(selectedWeek);
   const weekScores = weeklyData.map((d) => d.weekTotal);
