@@ -98,7 +98,11 @@ export function GameProvider({
   children: ReactNode;
 }) {
   const season = getSeasonMeta(seasonId);
-  const league = useMemo(() => loadSeason(seasonId), [seasonId]);
+  const seasonData = getSeasonData(seasonId);
+  const league = useMemo(
+    () => loadSeason(seasonId),
+    [seasonId, seasonData.currentWeek, seasonData.contestants, seasonData.weeklyScores]
+  );
 
   const getLeaderboard = () => {
     const entries = league.familyMembers.map((member) => {

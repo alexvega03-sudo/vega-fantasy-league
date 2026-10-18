@@ -7,6 +7,7 @@ const EPISODE_BREAKDOWNS: Record<string, Record<number, string>> = {
   '51': {
     2: 'https://assets.globaltv.com/wp-content/uploads/2026/09/survivor-51-episode-2-points.jpg',
     3: 'https://assets.globaltv.com/wp-content/uploads/2026/10/08124654/survivor-51-episode-3-points.jpg',
+    4: 'https://assets.globaltv.com/wp-content/uploads/2026/10/15152531/survivor-51-episode-4-points_v2.jpg',
   },
 };
 
