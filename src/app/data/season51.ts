@@ -70,7 +70,7 @@ export const contestants: {
   { id: 's51-toka-kilby', name: 'Kilby', tribe: 'Toka', isEliminated: false },
   { id: 's51-toka-devin', name: 'Devin', tribe: 'Toka', isEliminated: false },
   { id: 's51-toka-jelly', name: 'Jelly', tribe: 'Toka', isEliminated: false },
-  { id: 's51-toka-jenna', name: 'Jenna', tribe: 'Toka', isEliminated: false },
+  { id: 's51-toka-jenna', name: 'Jenna', tribe: 'Toka', isEliminated: true },
   { id: 's51-toka-lewis', name: 'Lewis', tribe: 'Toka', isEliminated: false },
   { id: 's51-toka-maggie', name: 'Maggie', tribe: 'Toka', isEliminated: false },
   { id: 's51-toka-mike', name: 'Mike', tribe: 'Toka', isEliminated: false },
@@ -131,6 +131,23 @@ export const weeklyScores: {
   { weekNumber: 3, contestantId: 's51-toka-patt', points: 10 },
   { weekNumber: 3, contestantId: 's51-savu-rob', points: 45 },
   { weekNumber: 3, contestantId: 's51-savu-sharonda', points: 11 },
+  { weekNumber: 4, contestantId: 's51-savu-alexis', points: 1 },
+  { weekNumber: 4, contestantId: 's51-toka-an', points: 11 },
+  { weekNumber: 4, contestantId: 's51-toka-brady', points: 11 },
+  { weekNumber: 4, contestantId: 's51-savu-carter', points: 11 },
+  { weekNumber: 4, contestantId: 's51-savu-cristian', points: 11 },
+  { weekNumber: 4, contestantId: 's51-toka-devin', points: 1 },
+  { weekNumber: 4, contestantId: 's51-savu-eric', points: 11 },
+  { weekNumber: 4, contestantId: 's51-toka-jelly', points: 6 },
+  { weekNumber: 4, contestantId: 's51-toka-jenna', points: 25 },
+  { weekNumber: 4, contestantId: 's51-toka-kilby', points: 11 },
+  { weekNumber: 4, contestantId: 's51-savu-kristin', points: 11 },
+  { weekNumber: 4, contestantId: 's51-toka-lewis', points: 11 },
+  { weekNumber: 4, contestantId: 's51-savu-linnea', points: 11 },
+  { weekNumber: 4, contestantId: 's51-toka-maggie', points: 11 },
+  { weekNumber: 4, contestantId: 's51-toka-mike', points: 11 },
+  { weekNumber: 4, contestantId: 's51-savu-ori', points: 1 },
+  { weekNumber: 4, contestantId: 's51-savu-sharonda', points: 11 },
 ];
 
 export const draftPicks: Record<string, { contestantId: string; pickWeek: number }[]> = {
@@ -226,4 +243,4 @@ export const draftPicks: Record<string, { contestantId: string; pickWeek: number
   ],
 };
 
-export const currentWeek = 3;
+export const currentWeek = 4;
