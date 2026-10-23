@@ -8,6 +8,7 @@ const EPISODE_BREAKDOWNS: Record<string, Record<number, string>> = {
     2: 'https://assets.globaltv.com/wp-content/uploads/2026/09/survivor-51-episode-2-points.jpg',
     3: 'https://assets.globaltv.com/wp-content/uploads/2026/10/08124654/survivor-51-episode-3-points.jpg',
     4: 'https://assets.globaltv.com/wp-content/uploads/2026/10/15152531/survivor-51-episode-4-points_v2.jpg',
+    5: 'https://assets.globaltv.com/wp-content/uploads/2026/10/22143109/survivor-51-episode-5-points.jpg',
   },
 };
 
@@ -25,6 +26,12 @@ export function WeeklyBreakdown() {
   const weeklyData = getWeeklyBreakdown(selectedWeek);
   const weekScores = weeklyData.map((d) => d.weekTotal);
   const maxScore = Math.max(...weekScores, 0);
+  const lastScoredWeek = (contestantId: string) =>
+    weeklyScores
+      .filter((score) => score.contestantId === contestantId)
+      .reduce((latest, score) => Math.max(latest, score.weekNumber), 0);
+  const isGoneThisWeek = (contestant?: { id: string; isEliminated: boolean }) =>
+    Boolean(contestant?.isEliminated && selectedWeek > lastScoredWeek(contestant.id));
 
   if (!hasStarted) {
     return (
@@ -123,15 +130,25 @@ export function WeeklyBreakdown() {
 
                   {/* Castaway Details */}
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pl-7">
-                    {data.contestantScores.map((cs) => (
-                      <div
-                        key={cs.contestant?.id}
-                        className="flex items-center justify-between text-sm p-2 bg-gray-50 rounded"
-                      >
-                        <span className="text-gray-600">{cs.contestant?.name}</span>
-                        <span className="font-medium text-gray-900">{cs.points} pts</span>
-                      </div>
-                    ))}
+                    {data.contestantScores.map((cs) => {
+                      const eliminated = isGoneThisWeek(cs.contestant);
+
+                      return (
+                        <div
+                          key={cs.contestant?.id}
+                          className={`flex items-center justify-between text-sm p-2 bg-gray-50 rounded ${
+                            eliminated ? 'opacity-50' : ''
+                          }`}
+                        >
+                          <span className={eliminated ? 'line-through text-gray-400' : 'text-gray-600'}>
+                            {cs.contestant?.name}
+                          </span>
+                          <span className={`font-medium ${eliminated ? 'text-gray-400' : 'text-gray-900'}`}>
+                            {cs.points} pts
+                          </span>
+                        </div>
+                      );
+                    })}
                   </div>
                 </div>
               );
@@ -169,11 +186,14 @@ export function WeeklyBreakdown() {
                     (score) =>
                       score.weekNumber === selectedWeek && score.contestantId === castaway.id
                   )?.points ?? 0;
+                const eliminated = isGoneThisWeek(castaway);
 
                 return (
-                  <tr key={castaway.id}>
+                  <tr key={castaway.id} className={eliminated ? 'opacity-50' : ''}>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="font-medium text-gray-900">{castaway.name}</div>
+                      <div className={`font-medium ${eliminated ? 'line-through text-gray-400' : 'text-gray-900'}`}>
+                        {castaway.name}
+                      </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <span
@@ -183,7 +203,9 @@ export function WeeklyBreakdown() {
                       </span>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <span className="text-lg font-semibold text-gray-900">{points}</span>
+                      <span className={`text-lg font-semibold ${eliminated ? 'text-gray-400' : 'text-gray-900'}`}>
+                        {points}
+                      </span>
                     </td>
                   </tr>
                 );
