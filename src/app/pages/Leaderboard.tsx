@@ -1,12 +1,22 @@
 import { useGame } from '../context/GameContext';
 import { LeaderDelight } from '../components/LeaderDelight';
+import { RankChange } from '../components/RankChange';
 import { Trophy, TrendingUp } from 'lucide-react';
 
 export function Leaderboard() {
-  const { getLeaderboard, hasStarted, season, currentWeek } = useGame();
+  const { getLeaderboard, hasStarted, season, currentWeek, weeklyScores } = useGame();
   const leaderboard = getLeaderboard();
   const leader = leaderboard[0];
   const leaderColor = leader?.familyMember.color ?? '#3b82f6';
+  const previousWeek = [...new Set(weeklyScores.map((score) => score.weekNumber))]
+    .filter((week) => week < currentWeek)
+    .sort((a, b) => a - b)
+    .at(-1);
+  const previousRanks = new Map(
+    previousWeek === undefined
+      ? []
+      : getLeaderboard(previousWeek).map((entry, index) => [entry.familyMember.id, index + 1])
+  );
 
   return (
     <div className="space-y-6">
@@ -63,6 +73,10 @@ export function Leaderboard() {
             <div className="divide-y divide-gray-200">
               {leaderboard.map((entry, index) => {
                 const isLeader = index === 0;
+                const currentRank = index + 1;
+                const previousRank = previousRanks.get(entry.familyMember.id);
+                const rankChange =
+                  previousRank === undefined ? 0 : previousRank - currentRank;
 
                 return (
                   <div
@@ -81,9 +95,10 @@ export function Leaderboard() {
                         style={{ backgroundColor: entry.familyMember.color }}
                       />
 
-                      <div className="flex-1">
-                        <h4 className="text-lg font-semibold text-gray-900">
+                      <div className="flex-1 min-w-0">
+                        <h4 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
                           {entry.familyMember.name}
+                          <RankChange change={rankChange} />
                         </h4>
                       </div>
 

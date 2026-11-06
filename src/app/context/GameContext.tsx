@@ -55,7 +55,7 @@ interface GameContextType {
   draftPicks: Record<string, DraftPick[]>;
   currentWeek: number;
   hasStarted: boolean;
-  getLeaderboard: () => LeaderboardEntry[];
+  getLeaderboard: (throughWeek?: number) => LeaderboardEntry[];
   getWeeklyBreakdown: (weekNumber: number) => WeeklyBreakdownEntry[];
 }
 
@@ -104,11 +104,12 @@ export function GameProvider({
     [seasonId, seasonData.currentWeek, seasonData.contestants, seasonData.weeklyScores]
   );
 
-  const getLeaderboard = () => {
+  const getLeaderboard = (throughWeek?: number) => {
     const entries = league.familyMembers.map((member) => {
       const memberPicks = league.draftPicks[member.id] || [];
       const totalPoints = league.weeklyScores
         .filter((score) => {
+          if (throughWeek !== undefined && score.weekNumber > throughWeek) return false;
           const pick = memberPicks.find((p) => p.contestantId === score.contestantId);
           return pick !== undefined && score.weekNumber >= pick.pickWeek;
         })
