@@ -4,7 +4,13 @@ import {
   useMemo,
   type ReactNode,
 } from 'react';
-import { getSeasonData, getSeasonMeta, type SeasonId, type SeasonMeta } from '../data/seasons';
+import {
+  getPostMergeSetup,
+  getSeasonData,
+  getSeasonMeta,
+  type SeasonId,
+  type SeasonMeta,
+} from '../data/seasons';
 
 export interface Contestant {
   id: string;
@@ -71,6 +77,16 @@ function loadSeason(seasonId: SeasonId) {
     }));
   }
 
+  const postMerge = getPostMergeSetup(seasonId);
+  if (postMerge) {
+    for (const [playerId, contestantId] of Object.entries(postMerge.picks)) {
+      if (!contestantId) continue;
+      if (!draftPicks[playerId]) draftPicks[playerId] = [];
+      if (draftPicks[playerId].some((pick) => pick.contestantId === contestantId)) continue;
+      draftPicks[playerId].push({ contestantId, pickWeek: postMerge.week });
+    }
+  }
+
   return {
     familyMembers: data.familyMembers.map((member) => ({
       id: member.id,
@@ -99,9 +115,10 @@ export function GameProvider({
 }) {
   const season = getSeasonMeta(seasonId);
   const seasonData = getSeasonData(seasonId);
+  const postMergePicks = getPostMergeSetup(seasonId)?.picks;
   const league = useMemo(
     () => loadSeason(seasonId),
-    [seasonId, seasonData.currentWeek, seasonData.contestants, seasonData.weeklyScores]
+    [seasonId, seasonData.currentWeek, seasonData.contestants, seasonData.weeklyScores, postMergePicks]
   );
 
   const getLeaderboard = (throughWeek?: number) => {

@@ -398,12 +398,10 @@ export function Rules() {
               <p className="text-amber-800 text-sm leading-relaxed">
                 {isSeason51 ? (
                   <>
-                    After the tribes merge, you can pick <strong>ONE extra castaway</strong> if you lost players
-                    before the merge. You cannot have more than <strong>eight castaways</strong> in your Fantasy
-                    Tribe at any time. If you still have all eight, you may <strong>swap</strong> one weaker pick
-                    for a stronger player. Extra picks and swaps are <strong>not retroactive</strong> — they take
-                    effect on the episode following the merge, and you keep points already earned from a
-                    swapped-out player.
+                    After the tribes merge, everyone picks <strong>ONE extra castaway</strong> to add to their
+                    Fantasy Tribe. Extra picks are <strong>not retroactive</strong> — points start counting in{' '}
+                    <strong>Week 8</strong>. On the Tribes page, that extra castaway is tagged{' '}
+                    <strong>Post-merge pick</strong> instead of Toka or Savu.
                   </>
                 ) : (
                   <>

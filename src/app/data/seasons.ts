@@ -7,13 +7,21 @@ export interface SeasonMeta {
   id: SeasonId;
   label: string;
   archived: boolean;
+  picksPerPlayer: number;
+  postMergePickWeek: number | null;
 }
 
 export const CURRENT_SEASON_ID: SeasonId = '51';
 
 export const seasons: SeasonMeta[] = [
-  { id: '51', label: 'Season 51', archived: false },
-  { id: '50', label: 'Season 50', archived: true },
+  {
+    id: '51',
+    label: 'Season 51',
+    archived: false,
+    picksPerPlayer: 9,
+    postMergePickWeek: season51.POST_MERGE_PICK_WEEK,
+  },
+  { id: '50', label: 'Season 50', archived: true, picksPerPlayer: 10, postMergePickWeek: null },
 ];
 
 const seasonData = {
@@ -35,4 +43,12 @@ export function getSeasonMeta(id: SeasonId): SeasonMeta {
 
 export function getSeasonData(id: SeasonId) {
   return seasonData[id];
+}
+
+export function getPostMergeSetup(id: SeasonId) {
+  if (id !== '51') return null;
+  return {
+    week: season51.POST_MERGE_PICK_WEEK,
+    picks: season51.postMergePicks,
+  };
 }
