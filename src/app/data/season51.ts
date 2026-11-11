@@ -292,15 +292,15 @@ export const draftPicks: Record<string, { contestantId: string; pickWeek: number
 export const POST_MERGE_PICK_WEEK = 8;
 
 export const postMergePicks: Record<string, string | null> = {
-  '11111111-0000-0000-0000-000000000001': null, // Virginia
-  '11111111-0000-0000-0000-000000000002': null, // Ruben
-  '11111111-0000-0000-0000-000000000004': null, // Jay
+  '11111111-0000-0000-0000-000000000001': 's51-toka-kilby', // Virginia — Kilby, counts from Week 8
+  '11111111-0000-0000-0000-000000000002': 's51-savu-carter', // Ruben — Carter, counts from Week 8
+  '11111111-0000-0000-0000-000000000004': 's51-savu-kristin', // Jay — Kristin, counts from Week 8
   '11111111-0000-0000-0000-000000000003': null, // Kara
-  '11111111-0000-0000-0000-000000000005': null, // Lisa
+  '11111111-0000-0000-0000-000000000005': 's51-savu-sharonda', // Lisa — Sharonda, counts from Week 8
   '19cce77b-8f0d-461b-b4dc-e30bb2f8bbc1': null, // Alex
   '86e5772c-2a66-4d35-ba7b-bc869559ea5c': null, // Mary
   's51-player-rob': 's51-toka-lewis', // Rob — Lewis, counts from Week 8
-  's51-player-marcella': null, // Marcella
+  's51-player-marcella': 's51-toka-maggie', // Marcella — Maggie, counts from Week 8
 };
 
 export const currentWeek = 7;
