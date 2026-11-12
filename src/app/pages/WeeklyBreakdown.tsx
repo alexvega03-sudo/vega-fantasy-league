@@ -132,12 +132,14 @@ export function WeeklyBreakdown() {
 
                   {/* Castaway Details */}
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pl-7">
-                    {data.contestantScores.map((cs) => {
+                    {data.contestantScores
+                      .filter((cs) => cs.counted)
+                      .map((cs) => {
                       const eliminated = isGoneThisWeek(cs.contestant);
 
                       return (
                         <div
-                          key={cs.contestant?.id}
+                          key={`${cs.contestant?.id}-${cs.pickWeek}`}
                           className={`flex items-center justify-between text-sm p-2 bg-gray-50 rounded ${
                             eliminated ? 'opacity-50' : ''
                           }`}

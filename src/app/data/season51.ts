@@ -1,6 +1,7 @@
 // Active Season 51 league data.
 // Each week, add contestant weekly points here and mark who was eliminated.
 // Eliminated contestants keep points for their elimination week, then score 0 after that.
+// After the merge, fill postMergePicks with one extra contestant per player (counts from Week 8).
 
 export const familyMembers = [
   {
@@ -284,6 +285,22 @@ export const draftPicks: Record<string, { contestantId: string; pickWeek: number
     { contestantId: 's51-toka-brady', pickWeek: 1 },
     { contestantId: 's51-toka-jenna', pickWeek: 1 },
   ],
+};
+
+// Extra post-merge pick per player. Replace null with a contestant id when they choose.
+// Points for these picks count from Week 8 only (not retroactive).
+export const POST_MERGE_PICK_WEEK = 8;
+
+export const postMergePicks: Record<string, string | null> = {
+  '11111111-0000-0000-0000-000000000001': 's51-toka-kilby', // Virginia — Kilby, counts from Week 8
+  '11111111-0000-0000-0000-000000000002': 's51-savu-carter', // Ruben — Carter, counts from Week 8
+  '11111111-0000-0000-0000-000000000004': 's51-savu-kristin', // Jay — Kristin, counts from Week 8
+  '11111111-0000-0000-0000-000000000003': 's51-toka-kilby', // Kara — Kilby, counts from Week 8
+  '11111111-0000-0000-0000-000000000005': 's51-savu-sharonda', // Lisa — Sharonda, counts from Week 8
+  '19cce77b-8f0d-461b-b4dc-e30bb2f8bbc1': 's51-toka-lewis', // Alex — Lewis, counts from Week 8
+  '86e5772c-2a66-4d35-ba7b-bc869559ea5c': 's51-toka-lewis', // Mary — Lewis, counts from Week 8
+  's51-player-rob': 's51-toka-lewis', // Rob — Lewis, counts from Week 8
+  's51-player-marcella': 's51-toka-maggie', // Marcella — Maggie, counts from Week 8
 };
 
 export const currentWeek = 7;

@@ -1,6 +1,6 @@
 import { useGame } from '../context/GameContext';
 import { TRIBE_SORT_ORDER, tribeBadgeClass } from '../lib/tribeStyles';
-import { Users, Flame, Skull, Star } from 'lucide-react';
+import { Users, Flame, Skull, Star, UserPlus } from 'lucide-react';
 
 export function Tribes() {
   const { familyMembers, contestants, draftPicks, weeklyScores, season } = useGame();
@@ -46,7 +46,7 @@ export function Tribes() {
         </div>
         <div>
           <div className="text-xs text-gray-500 uppercase tracking-wide mb-1">Picks per player</div>
-          <div className="text-2xl font-bold text-gray-900">{season.id === '51' ? 8 : 10}</div>
+          <div className="text-2xl font-bold text-gray-900">{season.picksPerPlayer}</div>
         </div>
         <div>
           <div className="text-xs text-gray-500 uppercase tracking-wide mb-1">Still active</div>
@@ -80,12 +80,20 @@ export function Tribes() {
               })
               .filter(Boolean) as (typeof contestants[0] & { pickWeek: number })[];
             memberCastaways.sort((a, b) => {
+              const lateA = a.pickWeek > 1 ? 1 : 0;
+              const lateB = b.pickWeek > 1 ? 1 : 0;
+              if (lateA !== lateB) return lateA - lateB;
               const tribeA = TRIBE_SORT_ORDER[a.tribe] ?? 99;
               const tribeB = TRIBE_SORT_ORDER[b.tribe] ?? 99;
               if (tribeA !== tribeB) return tribeA - tribeB;
               return a.name.localeCompare(b.name);
             });
-            const maxPicks = season.id === '51' ? 8 : 10;
+            const maxPicks = season.picksPerPlayer;
+            const hasPostMergePick = memberCastaways.some(
+              (castaway) =>
+                season.postMergePickWeek != null && castaway.pickWeek >= season.postMergePickWeek
+            );
+            const showPostMergePending = season.postMergePickWeek != null && !hasPostMergePick;
             const totalPoints = getPlayerTotalPoints(member.id);
             const activeCount = memberCastaways.filter((c) => !c.isEliminated).length;
             const eliminatedCount = memberCastaways.filter((c) => c.isEliminated).length;
@@ -123,7 +131,8 @@ export function Tribes() {
                       No picks assigned yet
                     </div>
                   ) : (
-                    memberCastaways.map((castaway) => {
+                    <>
+                    {memberCastaways.map((castaway) => {
                       const pts = weeklyScores
                         .filter((s) => s.contestantId === castaway.id && s.weekNumber >= castaway.pickWeek)
                         .reduce((sum, s) => sum + s.points, 0);
@@ -132,7 +141,7 @@ export function Tribes() {
 
                       return (
                         <div
-                          key={castaway.id}
+                          key={`${castaway.id}-${castaway.pickWeek}`}
                           className={`px-4 py-2.5 flex items-center justify-between gap-2 transition-colors ${
                             castaway.isEliminated ? 'opacity-50 bg-gray-50' : ''
                           }`}
@@ -159,22 +168,23 @@ export function Tribes() {
                                 {isMvp && (
                                   <span title="MVP" className="text-base leading-none">👑</span>
                                 )}
-                                {isLatePick && (
-                                  <span
-                                    title={`Post-Merge Pick — points count from Week ${castaway.pickWeek}`}
-                                    className="inline-flex items-center px-1.5 py-0.5 rounded text-xs font-medium bg-amber-100 text-amber-700"
-                                  >
-                                    Post-Merge Pick
-                                  </span>
-                                )}
                               </div>
 
                               <div className="flex items-center gap-2 mt-0.5">
-                                <span
-                                  className={`inline-flex items-center px-1.5 py-0.5 rounded text-xs font-medium ${tribeBadgeClass(castaway.tribe)}`}
-                                >
-                                  {castaway.tribe}
-                                </span>
+                                {isLatePick ? (
+                                  <span
+                                    title={`Points count from Week ${castaway.pickWeek}`}
+                                    className="inline-flex items-center px-1.5 py-0.5 rounded text-xs font-medium bg-slate-100 text-slate-700"
+                                  >
+                                    Post-merge pick
+                                  </span>
+                                ) : (
+                                  <span
+                                    className={`inline-flex items-center px-1.5 py-0.5 rounded text-xs font-medium ${tribeBadgeClass(castaway.tribe)}`}
+                                  >
+                                    {castaway.tribe}
+                                  </span>
+                                )}
                                 {castaway.isEliminated && (
                                   <span className="text-xs text-gray-400">Eliminated</span>
                                 )}
@@ -197,15 +207,36 @@ export function Tribes() {
                           </div>
                         </div>
                       );
-                    })
+                    })}
+                    {showPostMergePending ? (
+                      <div className="px-4 py-2.5 flex items-center justify-between gap-2">
+                        <div className="flex items-center gap-3">
+                          <UserPlus className="size-4 text-slate-400 shrink-0" />
+                          <div>
+                            <div className="font-medium text-sm text-gray-500">Awaiting pick</div>
+                            <div className="flex items-center gap-2 mt-0.5">
+                              <span
+                                title={`Points will count from Week ${season.postMergePickWeek}`}
+                                className="inline-flex items-center px-1.5 py-0.5 rounded text-xs font-medium bg-slate-100 text-slate-700"
+                              >
+                                Post-merge pick
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                        <span className="font-semibold text-sm text-gray-400">0 pts</span>
+                      </div>
+                    ) : null}
+                    </>
                   )}
                 </div>
 
                 {/* Card footer — picks remaining */}
-                {picks.length < maxPicks && (
+                {picks.length + (showPostMergePending ? 1 : 0) < maxPicks && (
                   <div className="px-4 py-3 bg-yellow-50 border-t border-yellow-100">
                     <p className="text-xs text-yellow-700 font-medium">
-                      {maxPicks - picks.length} pick{maxPicks - picks.length !== 1 ? 's' : ''} remaining
+                      {maxPicks - picks.length - (showPostMergePending ? 1 : 0)} pick
+                      {maxPicks - picks.length - (showPostMergePending ? 1 : 0) !== 1 ? 's' : ''} remaining
                     </p>
                   </div>
                 )}
